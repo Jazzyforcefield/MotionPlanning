@@ -3,6 +3,7 @@
 #include "graph.h"
 
 #include <iostream>
+#include <random>
 
 Graph::Graph() {
 
@@ -17,11 +18,22 @@ Graph::~Graph() {
 }
 
 void Graph::generate(float width, float height, int k) {
+  for (int i = 0; i < k; i++) {
+    // Create and add to milestones
+    float randfx = (rand() % 1000) * (width / 1000) - width / 2;
+    float randfy = (rand() % 1000) * (height / 1000) - height / 2;
+    float randfz = 0; // (rand() % 1000) * (length / 1000) - length / 2;
 
+    Milestone * new_milestone = new Milestone(glm::vec3(randfx, randfy, randfz));
+    milestones_.push_back(new_milestone);
+    size_++;
+  }
 }
 
 void Graph::connect(int k) {
-
+  for (int i = 0; i < size_; i++) {
+    milestones_[i]->populate_neighbors(milestones_, k);
+  }
 }
 
 void Graph::update() {

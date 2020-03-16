@@ -395,6 +395,7 @@ void draw(float dt) {
   glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(camera->view));
 
   glm::mat4 model = glm::mat4();
+  model = glm::translate(model, glm::vec3(0, 0, 0));
 
   glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -402,5 +403,5 @@ void draw(float dt) {
   glEnable(GL_PROGRAM_POINT_SIZE);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-  glDrawArrays(GL_TRIANGLES, 0, 10);    // Buffer 0, 10 vertices
+  glDrawArrays(GL_POINTS, 0, 10);    // Index 0, 10 vertices
 }

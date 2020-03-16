@@ -9,7 +9,7 @@
 #include "glad/glad.h"
 
 Configuration::Configuration() {
-  
+
 }
 
 Configuration::~Configuration() {
@@ -17,7 +17,12 @@ Configuration::~Configuration() {
 }
 
 void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos, int samples) {
+  graph_ = new Graph();
+  graph_->size_ = samples;
+  graph_->start_ = new Milestone(start_pos);
+  graph_->start_ = new Milestone(goal_pos);
 
+  graph_->generate(20.f, 20.f, 50);
 }
 
 void Configuration::find_path() {

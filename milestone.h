@@ -11,6 +11,7 @@ class Milestone {
  public:
   // Method declarations
   Milestone();
+  Milestone(glm::vec3 pos);
   ~Milestone();
   void update();
   float distance_between(Milestone * other);
