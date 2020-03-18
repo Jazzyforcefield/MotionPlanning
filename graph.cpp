@@ -27,6 +27,11 @@ Graph::~Graph() {
 void Graph::generate(float width, float height, int k) {
   std::cout << "Generating graph..." << std::endl;
 
+  // Add start and goal to milestone vector
+  milestones_.push_back(start_);
+  milestones_.push_back(goal_);
+  size_ += 2;
+
   for (int i = 0; i < k; i++) {
     // Create and add to milestones
     float randfx = (rand() % 1000) * (width / 1000) - width / 2;
@@ -69,4 +74,9 @@ void Graph::info() {
             << ")" << std::endl;
 
   std::cout << "This graph has " << size_ << " milestones." << std::endl;
+
+  for (int i = 0; i < size_; i++) {
+    std::cout << "Milestone " << i << ": " << std::endl;
+    milestones_[i]->info();
+  }
 }

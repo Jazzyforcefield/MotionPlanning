@@ -25,7 +25,7 @@ void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos, int sa
   graph_ = new Graph(start_pos, goal_pos);
 
   graph_->generate(20.f, 20.f, samples);
-  graph_->connect(5);
+  graph_->connect(2);
 }
 
 void Configuration::find_path() {

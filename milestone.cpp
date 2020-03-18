@@ -75,17 +75,17 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
 }
 
 void Milestone::info() {
-  std::cout << "Current milestone position: (" << position_.x << ", "
+  std::cout << "  Current milestone position: (" << position_.x << ", "
             << position_.y << ", " << position_.z << ")" << std::endl;
 
   if (previous_ != NULL) {
-    std::cout << "Previous milestone position: (" << previous_->position_.x
+    std::cout << "  Previous milestone position: (" << previous_->position_.x
               << ", " << previous_->position_.y << ", " << previous_->position_.z
               << ")" << std::endl;
   } else {
-    std::cout << "Previous milestone position: N/A" << std::endl;
+    std::cout << "  Previous milestone position: N/A" << std::endl;
   }
 
-  std::cout << "This milestone has " << neighbors_size_ << " neighbors"
+  std::cout << "  This milestone has " << neighbors_size_ << " neighbors"
             << std::endl;
 }

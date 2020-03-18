@@ -116,8 +116,8 @@ int main(int argc, char** argv) {
   glm::vec3 start = glm::vec3(-9.f, -9.f, 0);
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
-  cfg->create_graph(start, goal, 100);
-
+  cfg->create_graph(start, goal, 10);
+  cfg->graph_->info();
   cfg->find_path();
 
 
