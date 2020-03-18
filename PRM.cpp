@@ -113,6 +113,12 @@ int main(int argc, char** argv) {
   camera = new Camera(glm::vec3(50.f, 15.f, 150.f), 800.f, 600.f);
 
   cfg = new Configuration();
+  glm::vec3 start = glm::vec3(-9.f, -9.f, 0);
+  glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
+
+  cfg->create_graph(start, goal, 100);
+
+  cfg->find_path();
 
 
 

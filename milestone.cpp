@@ -47,7 +47,8 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   for (int j = 0; j < k && j < size; j++) {
     for (int i = 0; i < size; i++) {
       if (distances[i] < min_val &&
-          std::find(added_indices.begin(), added_indices.end(), i) !=
+          distances[i] != 0 &&
+          std::find(added_indices.begin(), added_indices.end(), i) ==
           added_indices.end()) {
         min_val = distances[i];
         min_index = i;
@@ -59,6 +60,13 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
     smallest_neighbors.push_back(milestones[min_index]);
     added_indices.push_back(min_index);
     neighbor_count++;
+
+    std::cout << "    Added milestone " << min_index
+              << " as neighbor." << std::endl;
+
+    // Reset values
+    min_val = INFINITY;
+    min_index = -1;
   }
 
   // Assign new/updated neighbor vector

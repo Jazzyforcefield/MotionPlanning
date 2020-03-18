@@ -9,7 +9,12 @@
 #include "glad/glad.h"
 
 Configuration::Configuration() {
-
+  graph_ = NULL;
+  path_vertices_ = NULL;
+  path_normals_ = NULL;
+  path_distance_ = 0;
+  path_size_ = 0;
+  path_exists_ = false;
 }
 
 Configuration::~Configuration() {
@@ -17,20 +22,18 @@ Configuration::~Configuration() {
 }
 
 void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos, int samples) {
-  graph_ = new Graph();
-  graph_->size_ = samples;
-  graph_->start_ = new Milestone(start_pos);
-  graph_->start_ = new Milestone(goal_pos);
+  graph_ = new Graph(start_pos, goal_pos);
 
-  graph_->generate(20.f, 20.f, 50);
+  graph_->generate(20.f, 20.f, samples);
+  graph_->connect(5);
 }
 
 void Configuration::find_path() {
-
+  std::cout << "Finding path using UCS..." << std::endl;
 }
 
 void Configuration::find_path_astar() {
-
+  std::cout << "Finding path using A*..." << std::endl;
 }
 
 void Configuration::update() {
