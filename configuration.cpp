@@ -96,11 +96,16 @@ void Configuration::find_path() {
           next_milestone->distance_between(next_milestone->neighbors_[i]) +
           start_dist[next_milestone];
 
+      // Double check this next time I look at it
       if (start_dist.find(next_milestone->neighbors_[i]) == start_dist.end()) {
         start_dist.insert(std::pair<Milestone *, float>(
             next_milestone->neighbors_[i], distance));
         next.push_back(next_milestone->neighbors_[i]);
         next_milestone->neighbors_[i]->previous_ = next_milestone;
+      } else {
+        if (distance < start_dist[next_milestone->neighbors_[i]]) {
+          start_dist[next_milestone->neighbors_[i]] = distance;
+        }
       }
     }
 
