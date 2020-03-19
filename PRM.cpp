@@ -51,8 +51,10 @@ const GLchar* vertexSource =
 "#version 150 core\n"
 "in vec3 position;"
 "in vec3 inNormal;"
+"in vec3 inColor;"
 "const vec3 inLightDir = normalize(vec3(0,2,2));"
 "out vec3 normal;"
+"out vec3 colors;"
 "out vec3 lightDir;"
 "uniform mat4 model;"
 "uniform mat4 view;"
@@ -63,16 +65,18 @@ const GLchar* vertexSource =
 "   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal,1.0);"
 "   normal = normalize(norm4.xyz);"
 "   lightDir = (view * vec4(inLightDir,0)).xyz;"
+"   colors = inColor;"
 "}";
 
 const GLchar* fragmentSource =
 "#version 150 core\n"
 "in vec3 normal;"
+"in vec3 colors;"
 "in vec3 lightDir;"
 "out vec4 outColor;"
 "const float ambient = .2;"
 "void main() {"
-"  vec3 color = vec3(0, 0, 0);"
+"  vec3 color = colors;"
 "  vec3 diffuseC = color*max(dot(lightDir,normal),0);"
 "  vec3 ambC = color*ambient;"
 "  vec3 combined = diffuseC + ambC;"
@@ -232,11 +236,11 @@ int main(int argc, char** argv) {
 
 
 
-  /*
+  
   GLint colAttrib = glGetAttribLocation(shaderProgram, "inColor");
   glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(colAttrib);
-  */
+  
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
   glBufferData(GL_ARRAY_BUFFER, 3 * cfg->graph_->size_* sizeof(float), cfg->graph_->graph_normals_, GL_STATIC_DRAW); // upload normals to vbo
@@ -436,8 +440,9 @@ void draw(float dt) {
                GL_STATIC_DRAW);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 362);
 
-  float agentv[] = {agent->position_.x, agent->position_.y, 0, 0, 0, 0, 0, 0};
   // Agent
+  float agentv[] = { agent->position_.x, agent->position_.y, 0.01, 1, 0, 0, 0, 0 };
+
   glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), agentv,
                GL_STATIC_DRAW);
   glDrawArrays(GL_POINTS, 0, 1);
