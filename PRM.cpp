@@ -38,6 +38,7 @@
 
 #include "camera.h"
 #include "configuration.h"
+#include "agent.h"
 
 using namespace std;
 
@@ -92,6 +93,7 @@ GLuint vbo[2];
 //  All other needed declarations
 Camera * camera;
 Configuration * cfg;
+Agent * agent;
 
 int main(int argc, char** argv) {
   SDL_Init(SDL_INIT_VIDEO);  // Initialize Graphics (for OpenGL)
@@ -121,6 +123,7 @@ int main(int argc, char** argv) {
   cfg->find_path();
   cfg->info();
 
+  agent = new Agent(start, cfg->path_);
 
 
 
@@ -395,6 +398,7 @@ void Win2PPM(int width, int height) {
 
 void draw(float dt) {
   camera->updateCamera(dt, 800.f, 600.f);
+  agent->update(dt);
 
   glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(camera->proj));
   glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(camera->view));
@@ -431,4 +435,10 @@ void draw(float dt) {
   glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 362, cfg->circle_vertices_,
                GL_STATIC_DRAW);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 362);
+
+  float agentv[] = {agent->position_.x, agent->position_.y, 0, 0, 0, 0, 0, 0};
+  // Agent
+  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), agentv,
+               GL_STATIC_DRAW);
+  glDrawArrays(GL_POINTS, 0, 1);
 }

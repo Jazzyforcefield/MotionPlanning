@@ -74,7 +74,6 @@ void Configuration::find_path() {
 
     // Assign next milestone to the min index
     if (min_index != NULL) {
-      path_.push_back(min_index);
       next_milestone = min_index;
     } else {
       std::cerr << "Problem... something isn't less than infinity."
@@ -109,6 +108,15 @@ void Configuration::find_path() {
     min_value = INFINITY;
     min_index = NULL;
   }
+
+  Milestone * next_path = graph_->goal_;
+
+  while (next_path != NULL) {
+    path_.push_back(next_path);
+    next_path = next_path->previous_;
+  }
+
+  std::reverse(path_.begin(), path_.end());
 }
 
 void Configuration::find_path_astar() {
