@@ -166,8 +166,6 @@ int main(int argc, char** argv) {
   glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * cfg->graph_->size_, cfg->graph_->graph_vertices_, GL_STATIC_DRAW); // upload vertices to vbo
   
   
-  // GL_STATIC_DRAW means we won't change the geometry, GL_DYNAMIC_DRAW = geometry changes infrequently
-  // GL_STREAM_DRAW = geom. changes frequently.  This effects which types of GPU memory is used
 
 
 
@@ -415,6 +413,21 @@ void draw(float dt) {
 
   glEnable(GL_PROGRAM_POINT_SIZE);
 
+  // Points
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
   glDrawArrays(GL_POINTS, 0, cfg->graph_->size_);    // Index 0, 10 vertices
+
+  // Connections
+  for (int i = 0; i < cfg->graph_->size_; i++) {
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        16 * sizeof(float) * cfg->graph_->milestones_[i]->neighbors_size_,
+        cfg->graph_->milestones_[i]->connections_, GL_STATIC_DRAW);
+    glDrawArrays(GL_LINES, 0, cfg->graph_->milestones_[i]->neighbors_size_ * 2); 
+  }
+
+  // Circle
+  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 362, cfg->circle_vertices_,
+               GL_STATIC_DRAW);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 362);
 }

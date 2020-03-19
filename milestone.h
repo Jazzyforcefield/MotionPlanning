@@ -26,6 +26,7 @@ class Milestone {
   // Member variables
   std::vector<Milestone *> neighbors_;
   Milestone * previous_;
+  float * connections_;
   int neighbors_size_;
   glm::vec3 position_;
 };

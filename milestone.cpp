@@ -8,12 +8,14 @@ Milestone::Milestone() {
   position_ = glm::vec3(0, 0, 0);
   neighbors_size_ = 0;
   previous_ = NULL;
+  connections_ = NULL;
 }
 
 Milestone::Milestone(glm::vec3 pos) {
   position_ = pos;
   neighbors_size_ = 0;
   previous_ = NULL;
+  connections_ = NULL;
 }
 
 Milestone::~Milestone() {
@@ -76,6 +78,29 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   // Assign new/updated neighbor vector
   neighbors_size_ = neighbor_count;
   neighbors_ = smallest_neighbors;
+
+  // Vertices for each line
+  connections_ = new float[16 * neighbors_size_];
+
+  for (int i = 0; i < neighbors_size_; i++) {
+    connections_[16 * i] = position_.x;
+    connections_[16 * i + 1] = position_.y;
+    connections_[16 * i + 2] = position_.z;
+    connections_[16 * i + 3] = 0;
+    connections_[16 * i + 4] = 0;
+    connections_[16 * i + 5] = 0;
+    connections_[16 * i + 6] = 0;
+    connections_[16 * i + 7] = 0;
+
+    connections_[16 * i + 8] = neighbors_[i]->position_.x;
+    connections_[16 * i + 9] = neighbors_[i]->position_.y;
+    connections_[16 * i + 10] = neighbors_[i]->position_.z;
+    connections_[16 * i + 11] = 0;
+    connections_[16 * i + 12] = 0;
+    connections_[16 * i + 13] = 0;
+    connections_[16 * i + 14] = 0;
+    connections_[16 * i + 15] = 0;
+  }
 }
 
 void Milestone::info() {
