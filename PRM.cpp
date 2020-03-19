@@ -57,7 +57,7 @@ const GLchar* vertexSource =
 "uniform mat4 view;"
 "uniform mat4 proj;"
 "void main() {"
-"   gl_PointSize = 10.0;"
+"   gl_PointSize = 5.0;"
 "   gl_Position = proj * view * model * vec4(position,1.0);"
 "   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal,1.0);"
 "   normal = normalize(norm4.xyz);"
@@ -71,7 +71,7 @@ const GLchar* fragmentSource =
 "out vec4 outColor;"
 "const float ambient = .2;"
 "void main() {"
-"  vec3 color = vec3(0.2, 0.4, 1);"
+"  vec3 color = vec3(0, 0, 0);"
 "  vec3 diffuseC = color*max(dot(lightDir,normal),0);"
 "  vec3 ambC = color*ambient;"
 "  vec3 combined = diffuseC + ambC;"
@@ -110,13 +110,13 @@ int main(int argc, char** argv) {
   // Create a window (offsetx, offsety, width, height, flags)
   SDL_Window* window = SDL_CreateWindow("My OpenGL Program", 0, 0, screen_width, screen_height, SDL_WINDOW_OPENGL);
   aspect = screen_width / (float)screen_height;  // aspect ratio (needs to be updated if the window is resized
-  camera = new Camera(glm::vec3(50.f, 15.f, 150.f), 800.f, 600.f);
+  camera = new Camera(glm::vec3(0, 0, 25), 800.f, 600.f);
 
   cfg = new Configuration();
   glm::vec3 start = glm::vec3(-9.f, -9.f, 0);
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
-  cfg->create_graph(start, goal, 10);
+  cfg->create_graph(start, goal, 100);
   cfg->graph_->info();
   cfg->find_path();
 
@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
   // Allocate memory on the graphics card to store geometry (vertex buffer object)
   glGenBuffers(2, vbo);  // Create 2 buffers called vbo
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); // Set the vbo as the active array buffer (Only one buffer can be active at a time)
-  //glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * cfg->graph_->size_, cfg->graph_->graph_vertices_, GL_STATIC_DRAW); // upload vertices to vbo
+  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * cfg->graph_->size_, cfg->graph_->graph_vertices_, GL_STATIC_DRAW); // upload vertices to vbo
   
   
   // GL_STATIC_DRAW means we won't change the geometry, GL_DYNAMIC_DRAW = geometry changes infrequently
@@ -191,7 +191,7 @@ int main(int argc, char** argv) {
     glGetShaderInfoLog(vertexShader, 512, NULL, buffer);
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
       "Compilation Error",
-      "Failed to Compile: Check Consol Output.",
+      "Failed to Compile: Check Console Output.",
       NULL);
     printf("Vertex Shader Compile Failed. Info:\n\n%s\n", buffer);
   }
@@ -207,7 +207,7 @@ int main(int argc, char** argv) {
     glGetShaderInfoLog(fragmentShader, 512, NULL, buffer);
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
       "Compilation Error",
-      "Failed to Compile: Check Consol Output.",
+      "Failed to Compile: Check Console Output.",
       NULL);
     printf("Fragment Shader Compile Failed. Info:\n\n%s\n", buffer);
   }
@@ -237,7 +237,7 @@ int main(int argc, char** argv) {
   */
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-  //glBufferData(GL_ARRAY_BUFFER, cfg->graph_->size_* sizeof(float), cfg->graph_->graph_normals_, GL_STATIC_DRAW); // upload normals to vbo
+  glBufferData(GL_ARRAY_BUFFER, 3 * cfg->graph_->size_* sizeof(float), cfg->graph_->graph_normals_, GL_STATIC_DRAW); // upload normals to vbo
   GLint normAttrib = glGetAttribLocation(shaderProgram, "inNormal");
   glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(normAttrib);
@@ -405,9 +405,16 @@ void draw(float dt) {
 
   glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+  glBufferData(GL_ARRAY_BUFFER, 8 * cfg->graph_->size_ * sizeof(float),
+               cfg->graph_->graph_vertices_, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+  glBufferData(GL_ARRAY_BUFFER, 3 * cfg->graph_->size_ * sizeof(float),
+               cfg->graph_->graph_normals_, GL_STATIC_DRAW);
 
   glEnable(GL_PROGRAM_POINT_SIZE);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-  glDrawArrays(GL_POINTS, 0, 10);    // Index 0, 10 vertices
+  glDrawArrays(GL_POINTS, 0, cfg->graph_->size_);    // Index 0, 10 vertices
 }

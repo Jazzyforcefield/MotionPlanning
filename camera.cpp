@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(glm::vec3 iposition, float width,float height)
+Camera::Camera(glm::vec3 iposition, float width, float height)
 {
 	position = iposition; // initial position
 	theta = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )

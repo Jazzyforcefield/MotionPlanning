@@ -5,11 +5,15 @@
 #include <iostream>
 
 Milestone::Milestone() {
-
+  position_ = glm::vec3(0, 0, 0);
+  neighbors_size_ = 0;
+  previous_ = NULL;
 }
 
 Milestone::Milestone(glm::vec3 pos) {
   position_ = pos;
+  neighbors_size_ = 0;
+  previous_ = NULL;
 }
 
 Milestone::~Milestone() {
