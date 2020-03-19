@@ -26,6 +26,7 @@ class Configuration {
 
   // Member variables
   Graph * graph_;
+  std::vector<Milestone *> path_;
   float * path_vertices_;
   float * path_normals_;
   float * circle_vertices_;

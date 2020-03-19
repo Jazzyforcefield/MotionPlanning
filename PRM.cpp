@@ -119,6 +119,7 @@ int main(int argc, char** argv) {
   cfg->create_graph(start, goal, 100);
   cfg->graph_->info();
   cfg->find_path();
+  cfg->info();
 
 
 

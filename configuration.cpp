@@ -72,8 +72,9 @@ void Configuration::find_path() {
       }
     }
 
+    // Assign next milestone to the min index
     if (min_index != NULL) {
-      std::cout << min_index->position_.x << " " << min_index->position_.y << std::endl;
+      path_.push_back(min_index);
       next_milestone = min_index;
     } else {
       std::cerr << "Problem... something isn't less than infinity."
@@ -81,12 +82,16 @@ void Configuration::find_path() {
       exit(1);
     }
 
+    // Check if goal is found
     if (next_milestone == graph_->goal_) {
-      return;
+      path_exists_ = true;
+      path_distance_ = start_dist[next_milestone];
+      break;
     }
 
     next.remove(min_index);
 
+    // Loop through neighbors
     for (int i = 0; i < next_milestone->neighbors_size_; i++) {
       float distance =
           next_milestone->distance_between(next_milestone->neighbors_[i]) +
@@ -100,19 +105,9 @@ void Configuration::find_path() {
       }
     }
 
+    // Reset min values
     min_value = INFINITY;
     min_index = NULL;
-  }
-
-  Milestone * prev = graph_->goal_;
-  while (prev->previous_ != NULL) {
-    std::cout << prev->position_.x << " " << prev->position_.y << std::endl;
-    prev = prev->previous_;
-  }
-
-  if (prev == graph_->start_) {
-    path_exists_ = true;
-    path_distance_ = start_dist[graph_->goal_];
   }
 }
 
@@ -150,9 +145,10 @@ void Configuration::info() {
     ss << "Path distance: " << path_distance_ << std::endl;
 
     while (next != NULL) {
-      sst << next->position_.x << ", " << next->position_.y << ", " << next->position_.z;
-      sst << "\n" << ss.rdbuf();
+      sst << "  " << next->position_.x << ", " << next->position_.y << ", "
+          << next->position_.z << "\n" << ss.rdbuf();
       ss = std::move(sst);
+      next = next->previous_;
     }
 
     sst << "Path:\n" << ss.rdbuf();
