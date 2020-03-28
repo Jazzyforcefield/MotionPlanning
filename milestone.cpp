@@ -76,14 +76,18 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
     }
 
     if (intersected) {
-      intersected = false;
+      // Make sure not to check this one again
       added_indices.push_back(min_index);
+
+      // Reset values
+      intersected = false;
       min_val = INFINITY;
       min_index = -1;
       j--;
       continue;
     }
 
+    // Add as neighbor
     smallest_neighbors.push_back(milestones[min_index]);
     added_indices.push_back(min_index);
     neighbor_count++;
