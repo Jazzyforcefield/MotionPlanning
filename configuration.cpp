@@ -123,10 +123,8 @@ void Configuration::find_path() {
     graph_->graph_vertices_[8 * next_path->id_ + 3] = 1.f;
     int size = next_path->neighbors_size_;
     for (int i = 0; i < size; i++) {
-      if (next_path->previous_ == next_path->neighbors_[i]) {
-        next_path->connections_[16 * i + 3] = 1.f;
-        next_path->connections_[16 * i + 11] = 1.f;
-      } else if (trailing_path == next_path->neighbors_[i]) {
+      if (next_path->previous_ == next_path->neighbors_[i] ||
+          trailing_path == next_path->neighbors_[i]) {
         next_path->connections_[16 * i + 3] = 1.f;
         next_path->connections_[16 * i + 11] = 1.f;
       }
