@@ -137,9 +137,9 @@ void Configuration::find_path_astar() {
   std::cout << "Finding path using A*..." << std::endl;
   std::map<Milestone *, float> start_dist;
   std::list<Milestone *> next;
-  Milestone *next_milestone;
+  Milestone * next_milestone;
   float min_value = INFINITY;
-  Milestone *min_index = NULL;
+  Milestone * min_index = NULL;
 
   start_dist.insert(std::pair<Milestone *, float>(graph_->start_, 0));
   next.push_back(graph_->start_);
@@ -196,7 +196,7 @@ void Configuration::find_path_astar() {
     min_index = NULL;
   }
 
-  Milestone *next_path = graph_->goal_;
+  Milestone * next_path = graph_->goal_;
 
   while (next_path != NULL) {
     path_.push_back(next_path);

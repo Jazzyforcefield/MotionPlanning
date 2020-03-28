@@ -26,9 +26,6 @@ bool SphereObstacle::line_intersecting(glm::vec3 p1, glm::vec3 p2) {
   b = 2.f * glm::dot((p1 - position_), (p1 - p2));
   c = pow(glm::dot(p1 - position_, p1 - position_), 2) - pow(radius_, 2);
 
-  std::cout << pow(b, 2) - 4.f * a *
-                               c << std::endl;
-
   if (pow(b, 2) - 4.f * a * c >= 0) {
     return true;
   } return false;
