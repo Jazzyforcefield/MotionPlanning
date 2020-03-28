@@ -18,24 +18,15 @@ Configuration::Configuration() {
   path_distance_ = 0;
   path_size_ = 0;
   path_exists_ = false;
-  circle_vertices_ = new float[8 * 362];
+  circle_vertices_ = new float[8 * 361];
 
-  circle_vertices_[0] = 0;
-  circle_vertices_[1] = 0;
-  circle_vertices_[2] = 0;
-  circle_vertices_[3] = 0;
-  circle_vertices_[4] = 0;
-  circle_vertices_[5] = 0;
-  circle_vertices_[6] = 0;
-  circle_vertices_[7] = 0;
-
-  for (int i = 1; i < 362; i++) {
-    circle_vertices_[8 * i] = 2.f * cos((i - 1) * 3.1415 / 180);
-    circle_vertices_[8 * i + 1] = 2.f * sin((i - 1) * 3.1415 / 180);
+  for (int i = 0; i < 361; i++) {
+    circle_vertices_[8 * i] = 2.f * cos((i) * 3.14159265 / 180);
+    circle_vertices_[8 * i + 1] = 2.f * sin((i) * 3.14159265 / 180);
     circle_vertices_[8 * i + 2] = 0;
     circle_vertices_[8 * i + 3] = 0;
     circle_vertices_[8 * i + 4] = 0;
-    circle_vertices_[8 * i + 5] = 0;
+    circle_vertices_[8 * i + 5] = 1.f;
     circle_vertices_[8 * i + 6] = 0;
     circle_vertices_[8 * i + 7] = 0;
   }
@@ -105,7 +96,7 @@ void Configuration::find_path() {
             next_milestone->neighbors_[i], distance));
         next.push_back(next_milestone->neighbors_[i]);
         next_milestone->neighbors_[i]->previous_ = next_milestone;
-      } else if (distance < start_dist[next_milestone->neighbors_[i]]) {
+      } else if (distance <= start_dist[next_milestone->neighbors_[i]]) {
         start_dist[next_milestone->neighbors_[i]] = distance;
         next_milestone->neighbors_[i]->previous_ = next_milestone;
       }
@@ -123,6 +114,7 @@ void Configuration::find_path() {
   }
 
   Milestone * next_path = graph_->goal_;
+  Milestone * trailing_path = graph_->goal_;
 
   while (next_path != NULL) {
     path_.push_back(next_path);
@@ -134,10 +126,13 @@ void Configuration::find_path() {
       if (next_path->previous_ == next_path->neighbors_[i]) {
         next_path->connections_[16 * i + 3] = 1.f;
         next_path->connections_[16 * i + 11] = 1.f;
-        break;
+      } else if (trailing_path == next_path->neighbors_[i]) {
+        next_path->connections_[16 * i + 3] = 1.f;
+        next_path->connections_[16 * i + 11] = 1.f;
       }
     }
 
+    trailing_path = next_path;
     next_path = next_path->previous_;
   }
 

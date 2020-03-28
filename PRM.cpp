@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
   // Creating graph and finding path
-  cfg->create_graph(start, goal, 1000, 10);
+  cfg->create_graph(start, goal, 10, 5);
   #ifndef NODEBUG
   cfg->graph_->info();
   #endif
@@ -443,9 +443,9 @@ void draw(float dt) {
   }
 
   // Circle
-  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 362, cfg->circle_vertices_,
+  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 361, cfg->circle_vertices_,
                GL_STATIC_DRAW);
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 362);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 361);
 
   // Agent
   float agentv[] = { agent->position_.x, agent->position_.y, 0.01, 1, 0, 0, 0, 0 };

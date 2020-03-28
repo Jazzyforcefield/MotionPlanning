@@ -2,7 +2,7 @@
 
 #include "milestone.h"
 
-#define NODEBUG
+#define DEBUG
 
 #include <iostream>
 
@@ -59,14 +59,18 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
     distances.push_back(distance_between(milestones[i]));
   }
 
+
+  // PROBLEM: Just because one milestone is a neighbor, doesn't meant that neighbor
+  // has that milestone as a neighbor...
   // Loop through up to k-times or until graph size to find minimum
-  for (int j = 0; neighbor_count < k && j < size; j++) {
+  for (int j = 0; neighbor_count < target_neighbors && j < size - 1; j++) {
     for (int i = 0; i < size; i++) {
-      //std::cout << distances[i] << " " << min_val << std::endl;
       if (distances[i] < min_val &&
           distances[i] != 0 &&
+          std::find(neighbors_.begin(), neighbors_.end(), milestones[i]) ==
+              neighbors_.end() &&
           std::find(added_indices.begin(), added_indices.end(), i) ==
-          added_indices.end()) {
+              added_indices.end()) {
         min_val = distances[i];
         min_index = i;
       }
@@ -96,13 +100,14 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
       }
 
       // Add as neighbor
-      smallest_neighbors.push_back(milestones[min_index]);
-      added_indices.push_back(min_index);
-      neighbor_count++;
+      neighbors_.push_back(milestones[min_index]);
+      milestones[min_index]->neighbors_.push_back(this);
+      neighbors_size_++;
+      milestones[min_index]->neighbors_size_++;
 
       #ifndef NODEBUG
       std::cout << "    Added milestone " << min_index
-                << " as neighbor." << std::endl;
+                << " as neighbor and vice versa." << std::endl;
       #endif
 
       // Reset values
@@ -112,8 +117,7 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   }
 
   // Assign new/updated neighbor vector
-  neighbors_size_ = neighbor_count;
-  neighbors_ = smallest_neighbors;
+  std::cout << "Neighbor count: " << neighbors_size_ << std::endl;
 
   // Vertices for each line
   connections_ = new float[16 * neighbors_size_];
