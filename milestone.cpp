@@ -2,6 +2,8 @@
 
 #include "milestone.h"
 
+#define NODEBUG
+
 #include <iostream>
 
 Milestone::Milestone() {
@@ -92,8 +94,10 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
     added_indices.push_back(min_index);
     neighbor_count++;
 
+    #ifndef NODEBUG
     std::cout << "    Added milestone " << min_index
               << " as neighbor." << std::endl;
+    #endif
 
     // Reset values
     min_val = INFINITY;

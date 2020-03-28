@@ -28,6 +28,7 @@
 #endif
 
 #define GLM_FORCE_RADIANS
+#define NODEBUG
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -126,7 +127,9 @@ int main(int argc, char** argv) {
 
   // Creating graph and finding path
   cfg->create_graph(start, goal, 1000, 10);
+  #ifndef NODEBUG
   cfg->graph_->info();
+  #endif
   cfg->find_path();
   cfg->info();
 

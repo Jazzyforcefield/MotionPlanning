@@ -2,6 +2,8 @@
 
 #include "graph.h"
 
+#define NODEBUG
+
 constexpr float AGENT_RADIUS = 1.f;
 
 #include <iostream>
@@ -28,7 +30,9 @@ Graph::~Graph() {
 }
 
 void Graph::generate(float width, float height, int k, int connections) {
+  #ifndef NODEBUG
   std::cout << "Generating graph..." << std::endl;
+  #endif
 
   srand(time(NULL));
 
@@ -66,12 +70,14 @@ void Graph::generate(float width, float height, int k, int connections) {
   milestones_.push_back(start_);
   milestones_.push_back(goal_);
   size_ += 2;
+
+  #ifndef NODEBUG
   std::cout << "  Added milestone " << 0 << " to milestones."
             << std::endl;
 
   std::cout << "  Added milestone " << 1 << " to milestones."
             << std::endl;
-
+  #endif
   for (int i = 2; i < k + 2; i++) {
     // Create and add to milestones
     float randfx = (rand() % 1000) * (width / 1000) - width / 2;
@@ -102,15 +108,21 @@ void Graph::generate(float width, float height, int k, int connections) {
     milestones_.push_back(new_milestone);
     size_++;
 
-
+    #ifndef NODEBUG
     std::cout << "  Added milestone " << (size_ - 1)
               << " to milestones." << std::endl;
+    #endif
+
   }
 
+  #ifndef NODEBUG
   std::cout << "Connecting graph..." << std::endl;
+  #endif
   connect(connections);
 
+  #ifndef NODEBUG
   std::cout << "Finished generation." << std::endl;
+  #endif
 }
 
 bool Graph::in_cspace(float x, float y, float z, float radius) {
@@ -124,15 +136,22 @@ bool Graph::in_cspace(float x, float y, float z, float radius) {
 }
 
 void Graph::connect(int k) {
+  #ifndef NODEBUG
   std::cout << "Connecting graph..." << std::endl;
+  #endif
 
   for (int i = 0; i < size_; i++) {
+    #ifndef NODEBUG
     std::cout << "  Populating neighbors for milestone "
               << i << "..." << std::endl; 
+    #endif
+
     milestones_[i]->populate_neighbors(milestones_, obstacles_, k);
   }
 
+  #ifndef NODEBUG
   std::cout << "Graph connected." << std::endl;
+  #endif
 }
 
 void Graph::update() {
