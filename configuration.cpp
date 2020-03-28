@@ -33,7 +33,9 @@ Configuration::Configuration() {
 }
 
 Configuration::~Configuration() {
-
+  delete graph_;
+  delete[] path_vertices_;
+  delete[] circle_vertices_;
 }
 
 void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,

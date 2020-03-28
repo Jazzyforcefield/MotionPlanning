@@ -2,7 +2,7 @@
 
 #include "graph.h"
 
-#define DEBUG
+#define NODEBUG
 
 constexpr float AGENT_RADIUS = 1.f;
 
@@ -27,6 +27,16 @@ Graph::Graph(glm::vec3 start_pos, glm::vec3 goal_pos) {
 }
 
 Graph::~Graph() {
+  for (int i = 0; i < size_; i++) {
+    delete milestones_[i];
+  }
+
+  for (int i = 0; i < obstacles_.size(); i++) {
+    delete obstacles_[i];
+  }
+
+  delete[] graph_vertices_;
+  delete[] graph_normals_;
 }
 
 void Graph::generate(float width, float height, int k, int connections) {

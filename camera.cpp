@@ -5,8 +5,8 @@ Camera::Camera(glm::vec3 iposition, float width, float height)
 	position = iposition; // initial position
 	theta = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
 	phi = 0; // rotation around X axis. Starts with up direction as ( 0, 1, 0 )
-	moveSpeed = 20;
-	turnSpeed = M_PI / 10; // radians/sec
+	moveSpeed = 10;
+	turnSpeed = M_PI / 3; // radians/sec
 
 	// dont need to change these
 	negativeMovement = glm::vec3(0, 0, 0);

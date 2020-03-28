@@ -55,7 +55,7 @@ const GLchar* vertexSource =
 "in vec3 position;"
 "in vec3 inNormal;"
 "in vec3 inColor;"
-"const vec3 inLightDir = normalize(vec3(0,2,2));"
+"const vec3 inLightDir = normalize(vec3(0, 0, 1));"
 "out vec3 normal;"
 "out vec3 colors;"
 "out vec3 lightDir;"
@@ -64,10 +64,10 @@ const GLchar* vertexSource =
 "uniform mat4 proj;"
 "void main() {"
 "   gl_PointSize = 5.0;"
-"   gl_Position = proj * view * model * vec4(position,1.0);"
-"   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal,1.0);"
+"   gl_Position = proj * view * model * vec4(position, 1.0);"
+"   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal, 1.0);"
 "   normal = normalize(norm4.xyz);"
-"   lightDir = (view * vec4(inLightDir,0)).xyz;"
+"   lightDir = (view * vec4(inLightDir, 0)).xyz;"
 "   colors = inColor;"
 "}";
 
@@ -77,11 +77,11 @@ const GLchar* fragmentSource =
 "in vec3 colors;"
 "in vec3 lightDir;"
 "out vec4 outColor;"
-"const float ambient = .2;"
+"const float ambient = 0.2;"
 "void main() {"
 "  vec3 color = colors;"
-"  vec3 diffuseC = color*max(dot(lightDir,normal),0);"
-"  vec3 ambC = color*ambient;"
+"  vec3 diffuseC = color * max(dot(lightDir,normal), 0);"
+"  vec3 ambC = color * ambient;"
 "  vec3 combined = diffuseC + ambC;"
 "  outColor = vec4(combined, 1.0);"
 "}";
@@ -95,7 +95,7 @@ GLint uniModel, uniView, uniProj; // Index of where to model, view, and projecti
 
 //  Vertex array and buffers
 GLuint vao;
-GLuint vbo[3];
+GLuint vbo[2];
 
 //  All other needed declarations
 Camera * camera;
@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
   // Creating graph and finding path
-  cfg->create_graph(start, goal, 10, 5);
+  cfg->create_graph(start, goal, 1000, 10);
   #ifndef NODEBUG
   cfg->graph_->info();
   #endif
@@ -351,13 +351,14 @@ int main(int argc, char** argv) {
   }
 
   delete camera;
+  delete cfg;
 
   // Clean Up
   glDeleteProgram(shaderProgram);
   glDeleteShader(fragmentShader);
   glDeleteShader(vertexShader);
 
-  glDeleteBuffers(3, vbo);
+  glDeleteBuffers(2, vbo);
   glDeleteVertexArrays(1, &vao);
 
   SDL_GL_DeleteContext(context);
@@ -432,7 +433,7 @@ void draw(float dt) {
   // Points
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
   glDrawArrays(GL_POINTS, 0, cfg->graph_->size_);    // Index 0, 10 vertices
-
+  
   // Connections
   for (int i = 0; i < cfg->graph_->size_; i++) {
     glBufferData(

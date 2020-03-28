@@ -2,7 +2,7 @@
 
 #include "milestone.h"
 
-#define DEBUG
+#define NODEBUG
 
 #include <iostream>
 
@@ -63,7 +63,7 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   // PROBLEM: Just because one milestone is a neighbor, doesn't meant that neighbor
   // has that milestone as a neighbor...
   // Loop through up to k-times or until graph size to find minimum
-  for (int j = 0; neighbor_count < target_neighbors && j < size - 1; j++) {
+  for (int j = 0; neighbors_size_ < target_neighbors && j < size - 1; j++) {
     for (int i = 0; i < size; i++) {
       if (distances[i] < min_val &&
           distances[i] != 0 &&
@@ -101,9 +101,7 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
 
       // Add as neighbor
       neighbors_.push_back(milestones[min_index]);
-      milestones[min_index]->neighbors_.push_back(this);
       neighbors_size_++;
-      milestones[min_index]->neighbors_size_++;
 
       #ifndef NODEBUG
       std::cout << "    Added milestone " << min_index
@@ -115,9 +113,6 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
       min_index = -1;
     }
   }
-
-  // Assign new/updated neighbor vector
-  std::cout << "Neighbor count: " << neighbors_size_ << std::endl;
 
   // Vertices for each line
   connections_ = new float[16 * neighbors_size_];
