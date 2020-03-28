@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "glm/vec3.hpp"
+#include "sphere_obstacle.h"
 
 class Milestone {
  public:
@@ -18,7 +19,9 @@ class Milestone {
 
   // Populates the neighbors_ vector with up to k-many neighbors when called
   // Will likely be changed to a spatial data structure instead of a vector later
-  void populate_neighbors(const std::vector<Milestone *>& milestones, int k = 1);
+  void populate_neighbors(const std::vector<Milestone *>& milestones,
+                          const std::vector<Obstacle *>& obstacles,
+                          int k = 1);
 
   // Prints out data
   void info();

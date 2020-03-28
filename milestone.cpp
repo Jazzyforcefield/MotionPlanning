@@ -34,9 +34,13 @@ float Milestone::distance_between(Milestone * other) {
 }
 
 void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
+                                   const std::vector<Obstacle *>& obstacles,
                                    int k) {
   int neighbor_count = 0;
+  int target_neighbors = k;
   int size = milestones.size();
+  int osize = obstacles.size();
+  bool intersected = false;
   std::vector<float> distances;
 
   float min_val = INFINITY;
@@ -50,7 +54,7 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   }
 
   // Loop through up to k-times or until graph size to find minimum
-  for (int j = 0; j < k && j < size; j++) {
+  for (int j = 0; j < target_neighbors && j < size; j++) {
     for (int i = 0; i < size; i++) {
       if (distances[i] < min_val &&
           distances[i] != 0 &&
@@ -63,6 +67,23 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
 
     // Adds the neighbor with the smallest distance to the neighbors
     // And add it to the vector of added indices
+    for (int o = 0; o < osize; o++) {
+      intersected = obstacles[o]->line_intersecting(position_,
+                                                    milestones[min_index]->position_);
+      if (intersected) {
+        break;
+      }
+    }
+
+    if (intersected) {
+      intersected = false;
+      added_indices.push_back(min_index);
+      min_val = INFINITY;
+      min_index = -1;
+      j--;
+      continue;
+    }
+
     smallest_neighbors.push_back(milestones[min_index]);
     added_indices.push_back(min_index);
     neighbor_count++;

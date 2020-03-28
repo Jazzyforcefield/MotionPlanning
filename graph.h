@@ -4,6 +4,7 @@
 #define GRAPH_H_
 
 #include "milestone.h"
+#include "obstacle.h"
 
 class Graph {
  public:
@@ -13,7 +14,10 @@ class Graph {
   ~Graph();
 
   // Randomly generates milestones centered at 0, 0
-  void generate(float width, float height, int k);
+  void generate(float width, float height, int k, int connections);
+
+  // Checks if point is within a given C-Space
+  bool in_cspace(float x, float y, float z, float radius);
 
   // Populates all milestones with up to k-neighbors
   void connect(int k);
@@ -33,6 +37,9 @@ class Graph {
   std::vector<Milestone *> milestones_;
   float * graph_vertices_;
   float * graph_normals_;
+
+  // List of obstacles in the scene
+  std::vector<Obstacle *> obstacles_;
 
   // Number of milestones in the graph
   int size_;

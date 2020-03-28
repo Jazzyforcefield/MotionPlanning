@@ -9,6 +9,7 @@
 #include <list>
 
 #include "glad/glad.h"
+#include "sphere_obstacle.h"
 
 Configuration::Configuration() {
   graph_ = NULL;
@@ -44,11 +45,13 @@ Configuration::~Configuration() {
 
 }
 
-void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos, int samples) {
+void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,
+                                 int samples, int connections) {
   graph_ = new Graph(start_pos, goal_pos);
 
-  graph_->generate(20.f, 20.f, samples);
-  graph_->connect(10);
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(0, 0, 0), 2.f));
+
+  graph_->generate(20.f, 20.f, samples, connections);
 }
 
 void Configuration::find_path() {
@@ -114,6 +117,12 @@ void Configuration::find_path() {
     min_index = NULL;
   }
 
+  if (!path_exists_) {
+    std::cout << "No path found, try again or"
+              << " use more samples and connections." << std::endl;
+    exit(0);
+  }
+
   Milestone * next_path = graph_->goal_;
 
   while (next_path != NULL) {
@@ -126,6 +135,75 @@ void Configuration::find_path() {
 
 void Configuration::find_path_astar() {
   std::cout << "Finding path using A*..." << std::endl;
+  std::map<Milestone *, float> start_dist;
+  std::list<Milestone *> next;
+  Milestone *next_milestone;
+  float min_value = INFINITY;
+  Milestone *min_index = NULL;
+
+  start_dist.insert(std::pair<Milestone *, float>(graph_->start_, 0));
+  next.push_back(graph_->start_);
+
+  while (next.size() != 0) {
+    // Find minimum distance of next milestones
+    for (std::list<Milestone *>::iterator it = next.begin(); it != next.end();
+         it++) {
+      if (start_dist[*it] < min_value) {  // Add heuristic here for A*, + goal - (*it)->position
+        min_value = start_dist[*it];
+        min_index = *it;
+      }
+    }
+
+    // Assign next milestone to the min index
+    if (min_index != NULL) {
+      next_milestone = min_index;
+    } else {
+      std::cerr << "Problem... something isn't less than infinity."
+                << std::endl;
+      exit(1);
+    }
+
+    // Check if goal is found
+    if (next_milestone == graph_->goal_) {
+      path_exists_ = true;
+      path_distance_ = start_dist[next_milestone];
+      break;
+    }
+
+    next.remove(min_index);
+
+    // Loop through neighbors
+    for (int i = 0; i < next_milestone->neighbors_size_; i++) {
+      float distance =
+          next_milestone->distance_between(next_milestone->neighbors_[i]) +
+          start_dist[next_milestone];
+
+      // Double check this next time I look at it
+      if (start_dist.find(next_milestone->neighbors_[i]) == start_dist.end()) {
+        start_dist.insert(std::pair<Milestone *, float>(
+            next_milestone->neighbors_[i], distance));
+        next.push_back(next_milestone->neighbors_[i]);
+        next_milestone->neighbors_[i]->previous_ = next_milestone;
+      } else {
+        if (distance < start_dist[next_milestone->neighbors_[i]]) {
+          start_dist[next_milestone->neighbors_[i]] = distance;
+        }
+      }
+    }
+
+    // Reset min values
+    min_value = INFINITY;
+    min_index = NULL;
+  }
+
+  Milestone *next_path = graph_->goal_;
+
+  while (next_path != NULL) {
+    path_.push_back(next_path);
+    next_path = next_path->previous_;
+  }
+
+  std::reverse(path_.begin(), path_.end());
 }
 
 void Configuration::update() {

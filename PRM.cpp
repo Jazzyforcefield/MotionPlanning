@@ -39,6 +39,8 @@
 #include "camera.h"
 #include "configuration.h"
 #include "agent.h"
+#include "obstacle.h"
+#include "sphere_obstacle.h"
 
 using namespace std;
 
@@ -92,7 +94,7 @@ GLint uniModel, uniView, uniProj; // Index of where to model, view, and projecti
 
 //  Vertex array and buffers
 GLuint vao;
-GLuint vbo[2];
+GLuint vbo[3];
 
 //  All other needed declarations
 Camera * camera;
@@ -122,7 +124,8 @@ int main(int argc, char** argv) {
   glm::vec3 start = glm::vec3(-9.f, -9.f, 0);
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
-  cfg->create_graph(start, goal, 100);
+  // Creating graph and finding path
+  cfg->create_graph(start, goal, 1000, 10);
   cfg->graph_->info();
   cfg->find_path();
   cfg->info();
@@ -350,7 +353,7 @@ int main(int argc, char** argv) {
   glDeleteShader(fragmentShader);
   glDeleteShader(vertexShader);
 
-  glDeleteBuffers(2, vbo);
+  glDeleteBuffers(3, vbo);
   glDeleteVertexArrays(1, &vao);
 
   SDL_GL_DeleteContext(context);

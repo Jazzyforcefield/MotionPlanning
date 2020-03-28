@@ -12,7 +12,8 @@ class Configuration {
   ~Configuration();
 
   // Create a graph 
-  void create_graph(glm::vec3 start_pos, glm::vec3 goal_pos, int samples);
+  void create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,
+                    int samples, int connections);
 
   // Will probably use Djikstra's algorithm for UCS
   void find_path();

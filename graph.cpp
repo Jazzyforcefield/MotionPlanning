@@ -2,6 +2,8 @@
 
 #include "graph.h"
 
+constexpr float AGENT_RADIUS = 1.f;
+
 #include <iostream>
 #include <random>
 #include <ctime>
@@ -25,7 +27,7 @@ Graph::Graph(glm::vec3 start_pos, glm::vec3 goal_pos) {
 Graph::~Graph() {
 }
 
-void Graph::generate(float width, float height, int k) {
+void Graph::generate(float width, float height, int k, int connections) {
   std::cout << "Generating graph..." << std::endl;
 
   srand(time(NULL));
@@ -76,6 +78,12 @@ void Graph::generate(float width, float height, int k) {
     float randfy = (rand() % 1000) * (height / 1000) - height / 2;
     float randfz = 0; // (rand() % 1000) * (length / 1000) - length / 2;
 
+    while (!in_cspace(randfx, randfy, randfz, AGENT_RADIUS)) {
+      randfx = (rand() % 1000) * (width / 1000) - width / 2;
+      randfy = (rand() % 1000) * (height / 1000) - height / 2;
+      randfz = 0;  // (rand() % 1000) * (length / 1000) - length / 2;
+    }
+
     // Setting x, y, z, r, g, b, u, v
     graph_vertices_[8 * i] = randfx;
     graph_vertices_[8 * i + 1] = randfy;
@@ -99,7 +107,20 @@ void Graph::generate(float width, float height, int k) {
               << " to milestones." << std::endl;
   }
 
+  std::cout << "Connecting graph..." << std::endl;
+  connect(connections);
+
   std::cout << "Finished generation." << std::endl;
+}
+
+bool Graph::in_cspace(float x, float y, float z, float radius) {
+  int size = obstacles_.size();
+
+  for (int i = 0; i < size; i++) {
+    if (obstacles_[i]->point_inside(glm::vec3(x, y, z), radius)) {
+      return false;
+    }
+  } return true;
 }
 
 void Graph::connect(int k) {
@@ -108,7 +129,7 @@ void Graph::connect(int k) {
   for (int i = 0; i < size_; i++) {
     std::cout << "  Populating neighbors for milestone "
               << i << "..." << std::endl; 
-    milestones_[i]->populate_neighbors(milestones_, k);
+    milestones_[i]->populate_neighbors(milestones_, obstacles_, k);
   }
 
   std::cout << "Graph connected." << std::endl;
