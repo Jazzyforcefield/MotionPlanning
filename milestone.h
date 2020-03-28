@@ -27,11 +27,13 @@ class Milestone {
   void info();
 
   // Member variables
+  int id_;
   std::vector<Milestone *> neighbors_;
   Milestone * previous_;
   float * connections_;
   int neighbors_size_;
   glm::vec3 position_;
+  static int num_milestones_;
 };
 
 #endif  // MILESTONE_H_

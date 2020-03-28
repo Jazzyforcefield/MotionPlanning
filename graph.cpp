@@ -2,7 +2,7 @@
 
 #include "graph.h"
 
-#define NODEBUG
+#define DEBUG
 
 constexpr float AGENT_RADIUS = 1.f;
 
@@ -78,6 +78,7 @@ void Graph::generate(float width, float height, int k, int connections) {
   std::cout << "  Added milestone " << 1 << " to milestones."
             << std::endl;
   #endif
+
   for (int i = 2; i < k + 2; i++) {
     // Create and add to milestones
     float randfx = (rand() % 1000) * (width / 1000) - width / 2;
@@ -115,9 +116,6 @@ void Graph::generate(float width, float height, int k, int connections) {
 
   }
 
-  #ifndef NODEBUG
-  std::cout << "Connecting graph..." << std::endl;
-  #endif
   connect(connections);
 
   #ifndef NODEBUG

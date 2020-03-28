@@ -105,10 +105,9 @@ void Configuration::find_path() {
             next_milestone->neighbors_[i], distance));
         next.push_back(next_milestone->neighbors_[i]);
         next_milestone->neighbors_[i]->previous_ = next_milestone;
-      } else {
-        if (distance < start_dist[next_milestone->neighbors_[i]]) {
-          start_dist[next_milestone->neighbors_[i]] = distance;
-        }
+      } else if (distance < start_dist[next_milestone->neighbors_[i]]) {
+        start_dist[next_milestone->neighbors_[i]] = distance;
+        next_milestone->neighbors_[i]->previous_ = next_milestone;
       }
     }
 
@@ -127,6 +126,18 @@ void Configuration::find_path() {
 
   while (next_path != NULL) {
     path_.push_back(next_path);
+    
+    // Highlighting path
+    graph_->graph_vertices_[8 * next_path->id_ + 3] = 1.f;
+    int size = next_path->neighbors_size_;
+    for (int i = 0; i < size; i++) {
+      if (next_path->previous_ == next_path->neighbors_[i]) {
+        next_path->connections_[16 * i + 3] = 1.f;
+        next_path->connections_[16 * i + 11] = 1.f;
+        break;
+      }
+    }
+
     next_path = next_path->previous_;
   }
 
@@ -184,10 +195,9 @@ void Configuration::find_path_astar() {
             next_milestone->neighbors_[i], distance));
         next.push_back(next_milestone->neighbors_[i]);
         next_milestone->neighbors_[i]->previous_ = next_milestone;
-      } else {
-        if (distance < start_dist[next_milestone->neighbors_[i]]) {
-          start_dist[next_milestone->neighbors_[i]] = distance;
-        }
+      } else if (distance < start_dist[next_milestone->neighbors_[i]]) {
+        start_dist[next_milestone->neighbors_[i]] = distance;
+        next_milestone->neighbors_[i]->previous_ = next_milestone;
       }
     }
 
@@ -227,9 +237,7 @@ void Configuration::info() {
   std::stringstream ss;
   std::stringstream sst;
 
-  Milestone * goal = graph_->goal_;
-  Milestone * start = graph_->start_;
-  Milestone * next = goal->previous_;
+  Milestone * next = graph_->goal_;
 
   // Building a string
   if (path_exists_) {

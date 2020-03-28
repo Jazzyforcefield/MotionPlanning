@@ -6,11 +6,14 @@
 
 #include <iostream>
 
+static int num_milestones_ = 0;
+
 Milestone::Milestone() {
   position_ = glm::vec3(0, 0, 0);
   neighbors_size_ = 0;
   previous_ = NULL;
   connections_ = NULL;
+  id_ = num_milestones_++;
 }
 
 Milestone::Milestone(glm::vec3 pos) {
@@ -18,10 +21,11 @@ Milestone::Milestone(glm::vec3 pos) {
   neighbors_size_ = 0;
   previous_ = NULL;
   connections_ = NULL;
+  id_ = num_milestones_++;
 }
 
 Milestone::~Milestone() {
-
+  num_milestones_--;
 }
 
 void Milestone::update() {
@@ -56,8 +60,9 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
   }
 
   // Loop through up to k-times or until graph size to find minimum
-  for (int j = 0; j < target_neighbors && j < size; j++) {
+  for (int j = 0; neighbor_count < k && j < size; j++) {
     for (int i = 0; i < size; i++) {
+      //std::cout << distances[i] << " " << min_val << std::endl;
       if (distances[i] < min_val &&
           distances[i] != 0 &&
           std::find(added_indices.begin(), added_indices.end(), i) ==
@@ -69,39 +74,41 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
 
     // Adds the neighbor with the smallest distance to the neighbors
     // And add it to the vector of added indices
-    for (int o = 0; o < osize; o++) {
-      intersected = obstacles[o]->line_intersecting(position_,
-                                                    milestones[min_index]->position_);
-      if (intersected) {
-        break;
-      }
-    }
 
-    if (intersected) {
-      // Make sure not to check this one again
+    if (min_index > -1) {
+      for (int o = 0; o < osize; o++) {
+        intersected = obstacles[o]->line_intersecting(position_,
+                                                      milestones[min_index]->position_);
+        if (intersected) {
+          break;
+        }
+      }
+
+      if (intersected) {
+        // Make sure not to check this one again
+        added_indices.push_back(min_index);
+
+        // Reset values
+        intersected = false;
+        min_val = INFINITY;
+        min_index = -1;
+        continue;
+      }
+
+      // Add as neighbor
+      smallest_neighbors.push_back(milestones[min_index]);
       added_indices.push_back(min_index);
+      neighbor_count++;
+
+      #ifndef NODEBUG
+      std::cout << "    Added milestone " << min_index
+                << " as neighbor." << std::endl;
+      #endif
 
       // Reset values
-      intersected = false;
       min_val = INFINITY;
       min_index = -1;
-      j--;
-      continue;
     }
-
-    // Add as neighbor
-    smallest_neighbors.push_back(milestones[min_index]);
-    added_indices.push_back(min_index);
-    neighbor_count++;
-
-    #ifndef NODEBUG
-    std::cout << "    Added milestone " << min_index
-              << " as neighbor." << std::endl;
-    #endif
-
-    // Reset values
-    min_val = INFINITY;
-    min_index = -1;
   }
 
   // Assign new/updated neighbor vector

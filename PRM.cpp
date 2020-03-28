@@ -101,6 +101,7 @@ GLuint vbo[3];
 Camera * camera;
 Configuration * cfg;
 Agent * agent;
+int Milestone::num_milestones_ = 0;
 
 int main(int argc, char** argv) {
   SDL_Init(SDL_INIT_VIDEO);  // Initialize Graphics (for OpenGL)
