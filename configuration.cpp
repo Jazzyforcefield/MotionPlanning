@@ -24,7 +24,7 @@ Configuration::Configuration() {
     circle_vertices_[8 * i] = 2.f * cos((i) * 3.14159265 / 180);
     circle_vertices_[8 * i + 1] = 2.f * sin((i) * 3.14159265 / 180);
     circle_vertices_[8 * i + 2] = 0;
-    circle_vertices_[8 * i + 3] = 0;
+    circle_vertices_[8 * i + 3] = 1.f;
     circle_vertices_[8 * i + 4] = 0;
     circle_vertices_[8 * i + 5] = 1.f;
     circle_vertices_[8 * i + 6] = 0;

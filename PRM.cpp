@@ -335,21 +335,19 @@ int main(int argc, char** argv) {
 
     if (saveOutput) Win2PPM(screen_width, screen_height);
 
-
     SDL_GL_SwapWindow(window); // Double buffering
-
 
     frame++;
     t1 = SDL_GetTicks();
-    if (t1 - t0 > 1000)
-    {
-      printf("Average Frames Per Second: %.4f\r", frame / ((t1 - t0) / 1000.f));
+    if (t1 - t0 >= 1000.f) {
+      printf("Average Frames Per Second: %.4f\r", frame * 1000.f / (t1 - t0));
       fflush(stdout);
       t0 = t1;
       frame = 0;
     }
   }
 
+  // Freeing memory
   delete camera;
   delete cfg;
 
