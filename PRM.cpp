@@ -117,7 +117,7 @@ int main(int argc, char ** argv) {
 
 
 
-
+  // Object setup
 
   // Create a window (offsetx, offsety, width, height, flags)
   SDL_Window * window = SDL_CreateWindow("Motion Planning", 0, 0, screen_width, screen_height, SDL_WINDOW_OPENGL);
@@ -172,7 +172,7 @@ int main(int argc, char ** argv) {
 
 
 
-
+  // Initial vertex setup
   // Build a Vertex Array Object. This stores the VBO and attribute mappings in one object
   glGenVertexArrays(1, &vao); // Create a VAO
   glBindVertexArray(vao); // Bind the above created VAO to the current context
@@ -247,12 +247,14 @@ int main(int argc, char ** argv) {
 
   
   GLint colAttrib = glGetAttribLocation(shaderProgram, "inColor");
-  glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+      (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(colAttrib);
   
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-  glBufferData(GL_ARRAY_BUFFER, 3 * cfg->graph_->size_* sizeof(float), cfg->graph_->graph_normals_, GL_STATIC_DRAW); // upload normals to vbo
+  glBufferData(GL_ARRAY_BUFFER, 3 * cfg->graph_->size_* sizeof(float),
+      cfg->graph_->graph_normals_, GL_STATIC_DRAW); // upload normals to vbo
   GLint normAttrib = glGetAttribLocation(shaderProgram, "inNormal");
   glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(normAttrib);

@@ -2,6 +2,8 @@
 
 #include "sphere_obstacle.h"
 
+constexpr float AGENT_RADIUS = 0.5f;
+
 SphereObstacle::SphereObstacle() : Obstacle() {
   radius_ = 1.f;
   vertices_ = new float[8 * 361];
@@ -47,8 +49,8 @@ bool SphereObstacle::point_inside(glm::vec3 point, float agent_radius) {
 bool SphereObstacle::line_intersecting(glm::vec3 p1, glm::vec3 p2) {
   float a, b, c;
   a = 1.f;
-  b = 2.f * glm::dot((p1 - position_), (p1 - p2));
-  c = pow(glm::dot(p1 - position_, p1 - position_), 2) - pow(radius_, 2);
+  b = 2.f * glm::dot((p1 - position_), (p2 - p1));
+  c = pow(glm::dot(p1 - position_, p1 - position_), 2) - pow(radius_ + AGENT_RADIUS, 2);
 
   if (pow(b, 2) - 4.f * a * c >= 0) {
     return true;
