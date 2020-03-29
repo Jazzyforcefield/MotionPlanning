@@ -15,6 +15,7 @@ class SphereObstacle : public Obstacle {
   bool line_intersecting(glm::vec3 p1, glm::vec3 p2) override;
 
   float radius_;
+  float * vertices_;  // Unused atm, but will use later
 };
 
 #endif  // SPHERE_OBSTACLE_H_

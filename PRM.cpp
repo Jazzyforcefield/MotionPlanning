@@ -103,7 +103,7 @@ Configuration * cfg;
 Agent * agent;
 int Milestone::num_milestones_ = 0;
 
-int main(int argc, char** argv) {
+int main(int argc, char ** argv) {
   SDL_Init(SDL_INIT_VIDEO);  // Initialize Graphics (for OpenGL)
 
   // Ask SDL to get a recent version of OpenGL (3.2 or greater)
@@ -117,8 +117,10 @@ int main(int argc, char** argv) {
 
 
 
+
+
   // Create a window (offsetx, offsety, width, height, flags)
-  SDL_Window* window = SDL_CreateWindow("My OpenGL Program", 0, 0, screen_width, screen_height, SDL_WINDOW_OPENGL);
+  SDL_Window * window = SDL_CreateWindow("Motion Planning", 0, 0, screen_width, screen_height, SDL_WINDOW_OPENGL);
   aspect = screen_width / (float)screen_height;  // aspect ratio (needs to be updated if the window is resized
   camera = new Camera(glm::vec3(0, 0, 25), 800.f, 600.f);
 
@@ -284,9 +286,9 @@ int main(int argc, char** argv) {
       // Scancode referes to a keyboard position, keycode referes to the letter (e.g., EU keyboards)
       if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE) quit = true; // Exit event loop
       if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_f) { 
-		  fullscreen = !fullscreen;
-		  SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0); // Set to full screen
-	  }
+		    fullscreen = !fullscreen;
+		    SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0); // Set to full screen
+	    }
 
       //  w s a d q e control
       if (windowEvent.key.keysym.sym == SDLK_w && windowEvent.type == SDL_KEYDOWN) camera->positiveMovement.z = 1;
@@ -319,7 +321,6 @@ int main(int argc, char** argv) {
 
       if (windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_DOWN) camera->negativeTurn.y = 1;
       else if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_DOWN) camera->negativeTurn.y = 0;
-
     }
 
     //  Clear the screen to default color
