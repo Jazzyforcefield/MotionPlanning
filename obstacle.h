@@ -21,6 +21,8 @@ class Obstacle {
 
   glm::vec3 position_;
   glm::vec3 velocity_;
+
+  float * vertices_;
 };
 
 #endif  // OBSTACLE_H_

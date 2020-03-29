@@ -442,10 +442,13 @@ void draw(float dt) {
     glDrawArrays(GL_LINES, 0, cfg->graph_->milestones_[i]->neighbors_size_ * 2); 
   }
 
-  // Circle
-  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 361, cfg->circle_vertices_,
-               GL_STATIC_DRAW);
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 361);
+  // Circles
+  for (int i = 0; i < cfg->graph_->obstacles_.size(); i++) {
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 361,
+                 cfg->graph_->obstacles_[i]->vertices_, GL_STATIC_DRAW);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 361);
+  }
+
 
   // Agent
   float agentv[] = { agent->position_.x, agent->position_.y, 0.01, 1, 0, 0, 0, 0 };

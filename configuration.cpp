@@ -18,31 +18,28 @@ Configuration::Configuration() {
   path_distance_ = 0;
   path_size_ = 0;
   path_exists_ = false;
-  circle_vertices_ = new float[8 * 361];
-
-  for (int i = 0; i < 361; i++) {
-    circle_vertices_[8 * i] = 2.f * cos((i) * 3.14159265 / 180);
-    circle_vertices_[8 * i + 1] = 2.f * sin((i) * 3.14159265 / 180);
-    circle_vertices_[8 * i + 2] = 0;
-    circle_vertices_[8 * i + 3] = 1.f;
-    circle_vertices_[8 * i + 4] = 0;
-    circle_vertices_[8 * i + 5] = 1.f;
-    circle_vertices_[8 * i + 6] = 0;
-    circle_vertices_[8 * i + 7] = 0;
-  }
 }
 
 Configuration::~Configuration() {
   delete graph_;
   delete[] path_vertices_;
-  delete[] circle_vertices_;
 }
 
 void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,
                                  int samples, int connections) {
   graph_ = new Graph(start_pos, goal_pos);
 
+  // Adding obstacles to scene
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-8.f, 8.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-6.f, 6.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-4.f, 4.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-2.f, 2.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(0, 0, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(2.f, -2.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(4.f, -4.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(6.f, -6.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-4.f, -4.f, 0), 2.f));
+  graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(0.f, -8.f, 0), 2.f));
 
   graph_->generate(20.f, 20.f, samples, connections);
 }

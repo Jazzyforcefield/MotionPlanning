@@ -4,7 +4,7 @@
 
 #define NODEBUG
 
-constexpr float AGENT_RADIUS = 1.f;
+constexpr float AGENT_RADIUS = 0.5f;
 
 #include <iostream>
 #include <random>

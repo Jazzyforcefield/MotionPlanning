@@ -4,14 +4,38 @@
 
 SphereObstacle::SphereObstacle() : Obstacle() {
   radius_ = 1.f;
+  vertices_ = new float[8 * 361];
+
+  for (int i = 0; i < 361; i++) {
+    vertices_[8 * i] = radius_ * cos(i * 3.14159265 / 180);
+    vertices_[8 * i + 1] = radius_ * sin(i * 3.14159265 / 180);
+    vertices_[8 * i + 2] = 0;
+    vertices_[8 * i + 3] = 1.f;
+    vertices_[8 * i + 4] = 0;
+    vertices_[8 * i + 5] = 1.f;
+    vertices_[8 * i + 6] = 0;
+    vertices_[8 * i + 7] = 0;
+  }
 }
 
 SphereObstacle::SphereObstacle(glm::vec3 center, float radius) : Obstacle(center) {
   radius_ = radius;
+  vertices_ = new float[8 * 361];
+
+  for (int i = 0; i < 361; i++) {
+    vertices_[8 * i] = radius_ * cos(i * 3.14159265 / 180) + center.x;
+    vertices_[8 * i + 1] = radius_ * sin(i * 3.14159265 / 180) + center.y;
+    vertices_[8 * i + 2] = 0 + center.z;
+    vertices_[8 * i + 3] = 1.f;
+    vertices_[8 * i + 4] = 0;
+    vertices_[8 * i + 5] = 1.f;
+    vertices_[8 * i + 6] = 0;
+    vertices_[8 * i + 7] = 0;
+  }
 }
 
 SphereObstacle::~SphereObstacle(){
-
+  delete[] vertices_;
 }
 
 bool SphereObstacle::point_inside(glm::vec3 point, float agent_radius) {

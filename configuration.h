@@ -30,7 +30,6 @@ class Configuration {
   std::vector<Milestone *> path_;
   float * path_vertices_;
   float * path_normals_;
-  float * circle_vertices_;
   float path_distance_;
   int path_size_;
   bool path_exists_;
