@@ -157,6 +157,15 @@ void Graph::connect(int k) {
     milestones_[i]->populate_neighbors(milestones_, obstacles_, k);
   }
 
+  for (int i = 0; i < size_; i++) {
+    #ifndef NODEBUG
+    std::cout << "  Connecting neighbors for milestone " << i << "..."
+              << std::endl;
+    #endif
+
+    milestones_[i]->connect_neighbors();
+  }
+
   #ifndef NODEBUG
   std::cout << "Graph connected." << std::endl;
   #endif

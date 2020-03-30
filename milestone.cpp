@@ -4,6 +4,8 @@
 
 #define NODEBUG
 
+constexpr float AGENT_RADIUS = 0.5f;
+
 #include <iostream>
 
 static int num_milestones_ = 0;
@@ -82,7 +84,8 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
     if (min_index > -1) {
       for (int o = 0; o < osize; o++) {
         intersected = obstacles[o]->line_intersecting(position_,
-                                                      milestones[min_index]->position_);
+                                                      milestones[min_index]->position_,
+                                                      AGENT_RADIUS);
         if (intersected) {
           break;
         }
@@ -101,7 +104,9 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
 
       // Add as neighbor
       neighbors_.push_back(milestones[min_index]);
+      milestones[min_index]->neighbors_.push_back(this);
       neighbors_size_++;
+      milestones[min_index]->neighbors_size_++;
 
       #ifndef NODEBUG
       std::cout << "    Added milestone " << min_index
@@ -113,7 +118,9 @@ void Milestone::populate_neighbors(const std::vector<Milestone *>& milestones,
       min_index = -1;
     }
   }
+}
 
+void Milestone::connect_neighbors() {
   // Vertices for each line
   connections_ = new float[16 * neighbors_size_];
 

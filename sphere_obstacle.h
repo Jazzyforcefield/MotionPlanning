@@ -12,7 +12,7 @@ class SphereObstacle : public Obstacle {
   ~SphereObstacle();
 
   bool point_inside(glm::vec3 point, float agent_radius) override;
-  bool line_intersecting(glm::vec3 p1, glm::vec3 p2) override;
+  bool line_intersecting(glm::vec3 p1, glm::vec3 p2, float agent_radius) override;
 
   float radius_;
 };

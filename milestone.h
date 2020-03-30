@@ -23,6 +23,9 @@ class Milestone {
                           const std::vector<Obstacle *>& obstacles,
                           int k = 1);
 
+  // Connect neighbors
+  void connect_neighbors();
+
   // Prints out data
   void info();
 

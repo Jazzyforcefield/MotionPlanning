@@ -68,6 +68,7 @@ void Configuration::find_path() {
     // Assign next milestone to the min index
     if (min_index != NULL) {
       next_milestone = min_index;
+      next.remove(min_index);
     } else {
       std::cerr << "Problem... something isn't less than infinity."
                 << std::endl;
@@ -80,8 +81,6 @@ void Configuration::find_path() {
       path_distance_ = start_dist[next_milestone];
       break;
     }
-
-    next.remove(min_index);
 
     // Loop through neighbors
     for (int i = 0; i < next_milestone->neighbors_size_; i++) {

@@ -2,8 +2,6 @@
 
 #include "sphere_obstacle.h"
 
-constexpr float AGENT_RADIUS = 0.5f;
-
 SphereObstacle::SphereObstacle() : Obstacle() {
   radius_ = 1.f;
   vertices_ = new float[8 * 361];
@@ -27,7 +25,7 @@ SphereObstacle::SphereObstacle(glm::vec3 center, float radius) : Obstacle(center
   for (int i = 0; i < 361; i++) {
     vertices_[8 * i] = radius_ * cos(i * 3.14159265 / 180) + center.x;
     vertices_[8 * i + 1] = radius_ * sin(i * 3.14159265 / 180) + center.y;
-    vertices_[8 * i + 2] = 0 + center.z;
+    vertices_[8 * i + 2] = 0;
     vertices_[8 * i + 3] = 1.f;
     vertices_[8 * i + 4] = 0;
     vertices_[8 * i + 5] = 1.f;
@@ -46,13 +44,18 @@ bool SphereObstacle::point_inside(glm::vec3 point, float agent_radius) {
   } return true;
 }
 
-bool SphereObstacle::line_intersecting(glm::vec3 p1, glm::vec3 p2) {
-  float a, b, c;
+bool SphereObstacle::line_intersecting(glm::vec3 p1, glm::vec3 p2, float agent_radius) {
+  float a, b, c, discrim;
   a = 1.f;
-  b = 2.f * glm::dot((p1 - position_), (p2 - p1));
-  c = pow(glm::dot(p1 - position_, p1 - position_), 2) - pow(radius_ + AGENT_RADIUS, 2);
+  b = 2.f * glm::dot((p1 - position_), glm::normalize(p2 - p1));
+  c = glm::dot(p1 - position_, p1 - position_) - pow(radius_ + agent_radius, 2);
+  discrim = pow(b, 2) - 4.f * a * c;
 
   if (pow(b, 2) - 4.f * a * c >= 0) {
-    return true;
+    float t = -b - sqrt(discrim) / (2.f * a);
+    glm::vec3 intersect = glm::normalize(p2 - p1) * t;
+    if (glm::length(intersect) - glm::length(p2 - p1) >= 0.001) {
+      return false;
+    } return true;
   } return false;
 }
