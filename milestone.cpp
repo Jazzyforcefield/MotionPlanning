@@ -127,7 +127,7 @@ void Milestone::connect_neighbors() {
   for (int i = 0; i < neighbors_size_; i++) {
     connections_[16 * i] = position_.x;
     connections_[16 * i + 1] = position_.y;
-    connections_[16 * i + 2] = position_.z + 0.1;
+    connections_[16 * i + 2] = position_.z + 0.01;
     connections_[16 * i + 3] = 0;
     connections_[16 * i + 4] = 0;
     connections_[16 * i + 5] = 0;
@@ -136,7 +136,7 @@ void Milestone::connect_neighbors() {
 
     connections_[16 * i + 8] = neighbors_[i]->position_.x;
     connections_[16 * i + 9] = neighbors_[i]->position_.y;
-    connections_[16 * i + 10] = neighbors_[i]->position_.z + 0.1;
+    connections_[16 * i + 10] = neighbors_[i]->position_.z + 0.01;
     connections_[16 * i + 11] = 0;
     connections_[16 * i + 12] = 0;
     connections_[16 * i + 13] = 0;

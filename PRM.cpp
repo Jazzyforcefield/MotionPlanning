@@ -115,8 +115,6 @@ int main(int argc, char ** argv) {
 
 
 
-
-
   // Object setup
 
   // Create a window (offsetx, offsety, width, height, flags)
@@ -137,7 +135,7 @@ int main(int argc, char ** argv) {
       exit(0);
     }
 
-    cfg->create_graph(start, goal, 1000, 100);
+    cfg->create_graph(start, goal, 1000, 10);
 
     #ifndef NODEBUG
     cfg->graph_->info();
