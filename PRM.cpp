@@ -129,13 +129,29 @@ int main(int argc, char ** argv) {
   glm::vec3 goal = glm::vec3(9.f, 9.f, 0);
 
   // Creating graph and finding path
-  cfg->create_graph(start, goal, 1000, 10);
-  #ifndef NODEBUG
-  cfg->graph_->info();
-  #endif
-  cfg->find_path();
-  cfg->info();
+  int retries = 0;
 
+  while (!cfg->path_exists_) {
+    if (retries > 2) {
+      std::cout << "Maximum retries exceeded. Try different parameters." << std::endl;
+      exit(0);
+    }
+
+    cfg->create_graph(start, goal, 1000, 10);
+
+    #ifndef NODEBUG
+    cfg->graph_->info();
+    #endif
+
+    cfg->find_path();
+
+    if (!cfg->path_exists_) {
+      retries++;
+      delete cfg->graph_;
+    }
+  }
+
+  cfg->info();
   agent = new Agent(start, cfg->path_);
 
 

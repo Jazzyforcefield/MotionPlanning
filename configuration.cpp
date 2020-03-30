@@ -108,7 +108,7 @@ void Configuration::find_path() {
   if (!path_exists_) {
     std::cout << "No path found, try again or"
               << " use more samples and connections." << std::endl;
-    exit(0);
+    // exit(0);
   }
 
   Milestone * next_path = graph_->goal_;
