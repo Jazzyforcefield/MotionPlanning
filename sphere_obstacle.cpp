@@ -52,10 +52,11 @@ bool SphereObstacle::line_intersecting(glm::vec3 p1, glm::vec3 p2, float agent_r
   discrim = pow(b, 2) - 4.f * a * c;
 
   if (pow(b, 2) - 4.f * a * c >= 0) {
-    float t = -b - sqrt(discrim) / (2.f * a);
-    glm::vec3 intersect = glm::normalize(p2 - p1) * t;
-    if (glm::length(intersect) - glm::length(p2 - p1) >= 0.001) {
-      return false;
-    } return true;
+    float t = (-b - sqrt(discrim)) / (2.f * a);
+    glm::vec3 intersect1 = glm::normalize(p2 - p1) * t;
+
+    if (glm::length(intersect1) - glm::length(p1 - p2) < 0.001) {
+      return true;
+    } return false;
   } return false;
 }
