@@ -148,7 +148,7 @@ int main(int argc, char ** argv) {
 
   cfg->info();
   for (int i = 0; i < 10; i ++) {
-    cfg->agents_.push_back(new Agent(start - glm::vec3(0.2f * i, -i, 0), cfg->path_));
+    cfg->agents_.push_back(new Agent(start - glm::vec3((2 * i % 5), -5 * i % 20, 0), cfg->path_));
   }
 
 
@@ -447,9 +447,9 @@ void draw(float dt) {
                cfg->graph_->graph_normals_, GL_STATIC_DRAW);
 
   glEnable(GL_PROGRAM_POINT_SIZE);
-
-  // Points
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+  /*
+  // Points
   glDrawArrays(GL_POINTS, 0, cfg->graph_->size_);    // Index 0, 10 vertices
   
   // Connections
@@ -460,7 +460,7 @@ void draw(float dt) {
         cfg->graph_->milestones_[i]->connections_, GL_STATIC_DRAW);
     glDrawArrays(GL_LINES, 0, cfg->graph_->milestones_[i]->neighbors_size_ * 2); 
   }
-
+  */
   // Circles
   for (int i = 0; i < cfg->graph_->obstacles_.size(); i++) {
     glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 361,
