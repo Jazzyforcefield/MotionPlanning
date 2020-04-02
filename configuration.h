@@ -4,6 +4,7 @@
 #define CONFIGURATION_H_
 
 #include "graph.h"
+#include "agent.h"
 
 class Configuration {
  public:
@@ -28,6 +29,7 @@ class Configuration {
   // Member variables
   Graph * graph_;
   std::vector<Milestone *> path_;
+  std::vector<Agent *> agents_;
   float * path_vertices_;
   float * path_normals_;
   float path_distance_;

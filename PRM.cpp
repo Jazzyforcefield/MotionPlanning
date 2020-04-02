@@ -51,40 +51,38 @@ int screen_height = 600;
 
 //  Shader sources
 const GLchar* vertexSource =
-"#version 150 core\n"
-"in vec3 position;"
-"in vec3 inNormal;"
-"in vec3 inColor;"
-"const vec3 inLightDir = normalize(vec3(0, 0, 1));"
-"out vec3 normal;"
-"out vec3 colors;"
-"out vec3 lightDir;"
-"uniform mat4 model;"
-"uniform mat4 view;"
-"uniform mat4 proj;"
-"void main() {"
-"   gl_PointSize = 5.0;"
-"   gl_Position = proj * view * model * vec4(position, 1.0);"
-"   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal, 1.0);"
-"   normal = normalize(norm4.xyz);"
-"   lightDir = (view * vec4(inLightDir, 0)).xyz;"
-"   colors = inColor;"
-"}";
+    "#version 150 core\n"
+    "in vec3 position;"
+    "in vec3 inColor;"
+    "in vec3 inNormal;"
+    "const vec3 inLightDir = normalize(vec3(0,2,2));"
+    "out vec3 Color;"
+    "out vec3 normal;"
+    "out vec3 lightDir;"
+    "uniform mat4 model;"
+    "uniform mat4 view;"
+    "uniform mat4 proj;"
+    "void main() {"
+    "gl_PointSize = 5.0;"
+    "   Color = inColor;"
+    "   gl_Position = proj * view * model * vec4(position,1.0);"
+    "   vec4 norm4 = transpose(inverse(model)) * vec4(inNormal,1.0);"
+    "   normal = normalize(norm4.xyz);"
+    "   lightDir = (view * vec4(inLightDir,0)).xyz;"
+    "}";
 
 const GLchar* fragmentSource =
-"#version 150 core\n"
-"in vec3 normal;"
-"in vec3 colors;"
-"in vec3 lightDir;"
-"out vec4 outColor;"
-"const float ambient = 0.2;"
-"void main() {"
-"  vec3 color = colors;"
-"  vec3 diffuseC = color * max(dot(lightDir,normal), 0);"
-"  vec3 ambC = color * ambient;"
-"  vec3 combined = diffuseC + ambC;"
-"  outColor = vec4(combined, 1.0);"
-"}";
+    "#version 150 core\n"
+    "in vec3 Color;"
+    "in vec3 normal;"
+    "in vec3 lightDir;"
+    "out vec4 outColor;"
+    "const float ambient = .2;"
+    "void main() {"
+    "   vec3 diffuseC = Color*max(dot(lightDir,normal),0);"
+    "   vec3 ambC = Color*ambient;"
+    "   outColor = vec4(diffuseC+ambC, 1.0);"
+    "}";
 
 bool fullscreen = false;
 void Win2PPM(int width, int height);
@@ -100,7 +98,6 @@ GLuint vbo[2];
 //  All other needed declarations
 Camera * camera;
 Configuration * cfg;
-Agent * agent;
 int Milestone::num_milestones_ = 0;
 
 int main(int argc, char ** argv) {
@@ -150,7 +147,9 @@ int main(int argc, char ** argv) {
   }
 
   cfg->info();
-  agent = new Agent(start, cfg->path_);
+  for (int i = 0; i < 10; i ++) {
+    cfg->agents_.push_back(new Agent(start - glm::vec3(0.2f * i, -i, 0), cfg->path_));
+  }
 
 
 
@@ -425,13 +424,17 @@ void Win2PPM(int width, int height) {
 
 void draw(float dt) {
   camera->updateCamera(dt, 800.f, 600.f);
-  agent->update(dt);
+  for (int i = 0; i < 10; i++) {
+    cfg->agents_[i]->update(dt, cfg->agents_);
+  }
 
+  // Remnant of poor planning and lack of understanding...
   glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(camera->proj));
   glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(camera->view));
 
   glm::mat4 model = glm::mat4();
   model = glm::translate(model, glm::vec3(0, 0, 0));
+  //model = glm::rotate(model, -3.1415f/2.f, glm::vec3(1, 0, 0));
 
   glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -467,9 +470,12 @@ void draw(float dt) {
 
 
   // Agent
-  float agentv[] = { agent->position_.x, agent->position_.y, 0.01, 1, 0, 0, 0, 0 };
+  for (int i = 0; i < 10; i++) {
+    float agentv[] = {
+        cfg->agents_[i]->position_.x, cfg->agents_[i]->position_.y, 0.01, 1, 0, 0, 0, 0};
 
-  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), agentv,
-               GL_STATIC_DRAW);
-  glDrawArrays(GL_POINTS, 0, 1);
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), agentv, GL_STATIC_DRAW);
+    glDrawArrays(GL_POINTS, 0, 1);
+  }
+  
 }

@@ -13,9 +13,13 @@ class Agent {
  public:
   Agent(glm::vec3 start, std::vector<Milestone *> path);
   ~Agent();
-  void update(float dt);
+  void update(float dt, const std::vector<Agent *> & agents);
+  void calculate_forces(const std::vector<Agent *> & agents);
 
   glm::vec3 position_;
+  glm::vec3 velocity_;
+  glm::vec3 acceleration_;
+  glm::vec3 force_;
   glm::vec3 direction_;
   float speed_;
   float radius_;
