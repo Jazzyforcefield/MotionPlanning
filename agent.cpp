@@ -77,7 +77,7 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
 
   for (int i = 0; i < nearby.size(); i++) {
     if (1.f / glm::length(position_ - nearby[i]->position_) > 1.f) {
-      separation_force += (position_ - nearby[i]->position_) - alignment_force / 2.f;
+      separation_force += (position_ - nearby[i]->position_) - alignment_force / 2.2f;
     } else {
       separation_force += 1.f / (position_ - nearby[i]->position_);
     }
