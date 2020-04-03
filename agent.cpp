@@ -33,14 +33,18 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
 
     if (broken) break;
   }
-  int k = 5;
-  int kv = 10;
+
+  // Hooke's Law constants
+  int k = 3;
+  int kv = 5;
+
   // Checks if at next milestone
   if (!broken) {
     if (index_ >= path_.size() - 1 && glm::length(diff) < 1.15f) {
       // Hacky way to slow down and still take into account cohesion/separation
       force_ = (float)-k * -diff + (float)-kv * velocity_ + force_ - direction_;
 
+      // Stops if at goal
       if (index_ >= path_.size() - 1 && glm::length(diff) < 0.05f) {
         return;
       } 
@@ -54,18 +58,14 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
   position_ += velocity_ * dt;
   velocity_ += force_ * dt;
 
-  if (glm::length(next_->position_ - position_) < 1.15f &&
-      index_ >= path_.size() - 1) {
-    //return;
-  }
+  calculate_forces(agents);
 
-  // && glm::length(force_) - 2.f * glm::length(direction_) < 3.35f
+  // Stops if too slow
   if (glm::length(velocity_) < 0.05f) {
     velocity_ = glm::vec3();
   }
 
-  calculate_forces(agents);
-
+  // Limit velocity
   if (glm::length(velocity_) > speed_) {
     velocity_ = glm::normalize(velocity_) * speed_;
   }
@@ -84,10 +84,12 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
   }
 
   int count = 0;
-  glm::vec3 alignment_force = glm::vec3();//direction_;
+
+  glm::vec3 alignment_force = glm::vec3();
   glm::vec3 cohesion_force = glm::vec3();
   glm::vec3 separation_force = glm::vec3();
 
+  // Alignment force
   for (int i = 0; i < nearby.size(); i++) {
     alignment_force += nearby[i]->velocity_;
     count++;
@@ -106,6 +108,8 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
   }
 
   count = 0;
+
+  // Cohesion force
   for (int i = 0; i < nearby.size(); i++) {
     cohesion_force += (nearby[i]->position_);
     count++;
@@ -119,6 +123,8 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
   }
 
   count = 0;
+  
+  // Separation force
   for (int i = 0; i < nearby.size(); i++) {
     float dist = glm::length(position_ - nearby[i]->position_);
     if (dist > 0 && dist < boid_dist - radius_) {
@@ -135,8 +141,6 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
     separation_force = glm::normalize(separation_force) * speed_ - velocity_;
   }
 
-  //std::cout << glm::length(alignment_force) << " " << glm::length(cohesion_force) << " "
-  //          << glm::length(separation_force) << std::endl;
-
+  // Sum the forces and add multiplier to separation to keep separated
   force_ = direction_ + alignment_force + cohesion_force + 3.50f * separation_force;
 }
