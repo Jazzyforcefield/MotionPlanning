@@ -51,14 +51,15 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
     } else if (index_ < path_.size()) {
       next_ = path_[index_++];
       direction_ = glm::normalize(next_->position_ - position_);
-      velocity_ = 1.f * glm::length(velocity_) * direction_;
+      //velocity_ = 1.f * glm::length(velocity_) * direction_;
     }
   }
 
   position_ += velocity_ * dt;
   velocity_ += force_ * dt;
 
-  calculate_forces(agents);
+  calculate_forces(agents, obstacles);
+
 
   // Stops if too slow
   if (glm::length(velocity_) < 0.05f) {
@@ -71,7 +72,8 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
   }
 }
 
-void Agent::calculate_forces(const std::vector<Agent *> & agents) {
+void Agent::calculate_forces(const std::vector<Agent *> & agents,
+                             const std::vector<Obstacle *> & obstacles) {
   int size = agents.size();
   float boid_dist = 1.5f;
   std::vector<Agent *> nearby;
@@ -141,6 +143,30 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
     separation_force = glm::normalize(separation_force) * speed_ - velocity_;
   }
 
+  
+  //std::vector<Obstacle *> nearby;
+  int osize = obstacles.size();
+  float sphere_influence = 0.5f;
+  glm::vec3 obstacle_force = glm::vec3();
+
+  count = 0;
+
+  for (int i = 0; i < osize; i++) {
+    glm::vec3 dir_to_self = position_ - obstacles[i]->position_;
+    float dist = glm::length(position_ - obstacles[i]->position_);
+    if (dist > 0 &&
+        dist < static_cast<SphereObstacle *>(obstacles[i])->radius_ + radius_ +
+                   sphere_influence) {
+      obstacle_force += (glm::normalize(dir_to_self) / dist);
+      count++;
+    }
+  }
+
+  if (count > 0) {
+    obstacle_force /= count;
+  }
+
   // Sum the forces and add multiplier to separation to keep separated
-  force_ = direction_ + alignment_force + cohesion_force + 3.50f * separation_force;
+  force_ = 10.f * direction_ + alignment_force + cohesion_force + 5.f * separation_force +
+           35.f * obstacle_force;
 }

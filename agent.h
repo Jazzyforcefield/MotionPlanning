@@ -15,7 +15,8 @@ class Agent {
   ~Agent();
   void update(float dt, const std::vector<Agent *> & agents,
               const std::vector<Obstacle *> & obstacles);
-  void calculate_forces(const std::vector<Agent *> & agents);
+  void calculate_forces(const std::vector<Agent *> & agents,
+                        const std::vector<Obstacle *> & obstacles);
 
   glm::vec3 position_;
   glm::vec3 velocity_;
