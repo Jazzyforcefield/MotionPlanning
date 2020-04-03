@@ -32,7 +32,12 @@
     </nav>
 	
     <h1 class="video-header p-3 m-0">Motion Planning</h1>
-    <p class="video-desc p-3 m-0">PRM with parameters configurable via variables inside PRM.cpp. Liam's camera was used.</p>
+    <p class="video-desc p-3 m-0">PRM with parameters configurable via variables inside PRM.cpp. Liam's camera was used.
+	    Some difficulty I had when trying to program this was primarily getting the agents moving with boids.
+	    The parameters were hard to tune without it bouncing back and forth. Other difficulty was finding that parentheses I missed when
+	    checking for intersections. Another difficulty is OpenGL in general. I could have used processing, but I wanted to figure out
+	    how OpenGL works because it's powerful. From my previous project, I came in with misunderstandings, so the draw function in PRM.cpp
+	    keeps bufferring new vertices instead of reusing them.</p>
 	  <ul>The following were implemented:
 		  <li>Boids</li>
 		  <li>PRM with UCS</li>
