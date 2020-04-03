@@ -30,6 +30,25 @@
         </ul>
       </div>
     </nav>
+	
+    <h1 class="video-header p-3 m-0">Motion Planning</h1>
+    <p class="video-desc p-3 m-0">PRM with parameters configurable via variables inside PRM.cpp.</p>
+	  <ul>The following were implemented:
+		  <li>Boids</li>
+		  <li>PRM with UCS</li>
+		  <li>Took into account agent extents, which are 0.5m and can be configured. Seen by the gap between points</li>
+		  <li>Multiple Obstacles</li>
+		  <li>Scenarios with interesting agent interactions, along the same path, colliding, and gathering once stopped</li>
+		  <li>Scenarios with interesting local minima</li>
+		  <li>Scenario where simulation produces odd behavior: where highly dense and forces push agents away from path and they get stuck because they don't replan</li>
+		  <li>Path smoothing</li>
+		  <li>I think my program can do 3D navigation since it only uses spheres, but I never tested it out, so whatever</li>
+	  </ul>
+    <div class="embed-responsive embed-responsive-4by3 p-3">
+      <iframe class="embed-responsive-item p-3" width="560" height="315" src="https://www.youtube.com/embed/sZaeia_JY3s" frameborder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+    </div>
 	  
     <h1 class="video-header p-3 m-0">UCS Shortest Path</h1>
     <p class="video-desc p-3 m-0">Shows an animated agent traversing a path found by UCS. Currently no collision checking or path highlighting due to time constraints. The path is printed in the output.<br />
