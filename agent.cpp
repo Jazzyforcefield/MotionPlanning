@@ -59,12 +59,12 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
 
   // Checks if at next milestone
   if (!broken) {
-    if (index_ >= path_.size() - 1 && glm::length(diff) < 1.15f) {
+    if (index_ >= path_.size() && glm::length(diff) < 1.15f) {
       // Hacky way to slow down and still take into account cohesion/separation
       force_ = (float)-k * -diff + (float)-kv * velocity_ + force_ - direction_;
 
       // Stops if at goal
-      if (index_ >= path_.size() - 1 && glm::length(diff) < 0.05f) {
+      if (index_ >= path_.size() && glm::length(diff) < 0.05f) {
         return;
       } 
     } else if (index_ < path_.size()) {
@@ -80,7 +80,7 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
 
 
   // Stops if too slow
-  if (glm::length(velocity_) < 0.05f) {
+  if (glm::length(velocity_) < 0.01f) {
     velocity_ = glm::vec3();
   }
 

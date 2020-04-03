@@ -30,6 +30,8 @@ void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,
   graph_ = new Graph(start_pos, goal_pos);
   
   // Adding obstacles to scene
+  // 1
+  
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-8.f, 8.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-6.f, 6.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-4.f, 4.f, 0), 2.f));
@@ -38,14 +40,18 @@ void Configuration::create_graph(glm::vec3 start_pos, glm::vec3 goal_pos,
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(2.f, -2.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(4.f, -4.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(6.f, -6.f, 0), 2.f));
-
+   // 2
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(-4.f, -4.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(0.f, -8.f, 0), 2.f));
-
+  
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(8.f, 2.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(6.f, 4.f, 0), 2.f));
   graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(4.f, 6.f, 0), 2.f));
+  // 3
   
+  // For showing no paths, change to 2 for odd behaviors
+ // graph_->obstacles_.push_back(new SphereObstacle(glm::vec3(8.f, -8.f, 0), 4.f));
+
   graph_->generate(20.f, 20.f, samples, connections);
 }
 

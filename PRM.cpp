@@ -96,11 +96,11 @@ GLuint vao;
 GLuint vbo[2];
 
 // when num agents 1000, agents can be pushed and can't go towards goal
-
+// Line 159 to change agent start pos
 /******** All other needed declarations and parameters ********/
 Camera * camera;                                              //
 Configuration * cfg;                                          //
-int num_agents = 1000;                                        //
+int num_agents = 1;                                           //
 int milestones = 1000;                                        //
 int connection_weight = 10;                                   //
 int Milestone::num_milestones_ = 0;                           //
@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
                        "Motion Planning", screen_width / 2, screen_height / 2,
                        screen_width, screen_height, SDL_WINDOW_OPENGL);
   aspect = screen_width / (float)screen_height;  // aspect ratio (needs to be updated if the window is resized
-  camera = new Camera(glm::vec3(0, 0, 25), 800.f, 600.f);
+  camera = new Camera(glm::vec3(0, 0, 30), 800.f, 600.f);
 
   cfg = new Configuration();
   glm::vec3 start = glm::vec3(-9.f, -9.f, 0);
@@ -155,12 +155,20 @@ int main(int argc, char ** argv) {
   }
 
   cfg->info();
-  for (int i = 0; i < num_agents; i++) {
-    cfg->agents_.push_back(new Agent(start - glm::vec3((i % 5), (2 * i % 500), 0), cfg->path_));
+  
+  for (int i = 0; i < num_agents; i++) {    // Change y to negative for odd behavior
+    cfg->agents_.push_back(new Agent(start - glm::vec3((i % 5), -(2 * i % 50), 0), cfg->path_));
   }
-
-
-
+  
+  /*
+  cfg->agents_.push_back(new Agent(start, cfg->path_));
+  cfg->agents_.push_back(new Agent(start, cfg->path_));
+  cfg->agents_.push_back(new Agent(start, cfg->path_));
+  std::reverse(cfg->path_.begin(), cfg->path_.end());
+  cfg->agents_.push_back(new Agent(goal, cfg->path_));
+  cfg->agents_.push_back(new Agent(goal, cfg->path_));
+  cfg->agents_.push_back(new Agent(goal, cfg->path_));
+  */
 
 
 
