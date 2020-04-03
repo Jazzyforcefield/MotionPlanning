@@ -95,10 +95,12 @@ GLint uniModel, uniView, uniProj; // Index of where to model, view, and projecti
 GLuint vao;
 GLuint vbo[2];
 
+// when num agents 1000, agents can be pushed and can't go towards goal
+
 /******** All other needed declarations and parameters ********/
 Camera * camera;                                              //
 Configuration * cfg;                                          //
-int num_agents = 100;                                           //
+int num_agents = 1000;                                        //
 int milestones = 1000;                                        //
 int connection_weight = 10;                                   //
 int Milestone::num_milestones_ = 0;                           //
@@ -119,7 +121,9 @@ int main(int argc, char ** argv) {
   // Object setup
 
   // Create a window (offsetx, offsety, width, height, flags)
-  SDL_Window * window = SDL_CreateWindow("Motion Planning", 0, 0, screen_width, screen_height, SDL_WINDOW_OPENGL);
+  SDL_Window* window = SDL_CreateWindow(
+                       "Motion Planning", screen_width / 2, screen_height / 2,
+                       screen_width, screen_height, SDL_WINDOW_OPENGL);
   aspect = screen_width / (float)screen_height;  // aspect ratio (needs to be updated if the window is resized
   camera = new Camera(glm::vec3(0, 0, 25), 800.f, 600.f);
 
@@ -152,7 +156,7 @@ int main(int argc, char ** argv) {
 
   cfg->info();
   for (int i = 0; i < num_agents; i++) {
-    cfg->agents_.push_back(new Agent(start - glm::vec3((i % 5), -(2 * i % 50), 0), cfg->path_));
+    cfg->agents_.push_back(new Agent(start - glm::vec3((i % 5), (2 * i % 500), 0), cfg->path_));
   }
 
 
@@ -306,8 +310,8 @@ int main(int argc, char ** argv) {
       if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE) quit = true; // Exit event loop
       if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_f) { 
 		    fullscreen = !fullscreen;
-		    SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0); // Set to full screen
-	    }
+		    SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+      }
 
       //  w s a d q e control
       if (windowEvent.key.keysym.sym == SDLK_w && windowEvent.type == SDL_KEYDOWN) camera->positiveMovement.z = 1;
