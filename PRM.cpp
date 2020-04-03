@@ -95,13 +95,14 @@ GLint uniModel, uniView, uniProj; // Index of where to model, view, and projecti
 GLuint vao;
 GLuint vbo[2];
 
-//  All other needed declarations
-Camera * camera;
-Configuration * cfg;
-int num_agents = 50;
-int milestones = 1000;
-int connection_weight = 10;
-int Milestone::num_milestones_ = 0;
+/******** All other needed declarations and parameters ********/
+Camera * camera;                                              //
+Configuration * cfg;                                          //
+int num_agents = 100;                                           //
+int milestones = 1000;                                        //
+int connection_weight = 10;                                   //
+int Milestone::num_milestones_ = 0;                           //
+/**************************************************************/
 
 int main(int argc, char ** argv) {
   SDL_Init(SDL_INIT_VIDEO);  // Initialize Graphics (for OpenGL)
@@ -150,8 +151,8 @@ int main(int argc, char ** argv) {
   }
 
   cfg->info();
-  for (int i = 0; i < num_agents; i ++) {
-    cfg->agents_.push_back(new Agent(start - glm::vec3((2 * i % 5), -5 * i % 20, 0), cfg->path_));
+  for (int i = 0; i < num_agents; i++) {
+    cfg->agents_.push_back(new Agent(start - glm::vec3((i % 5), -(2 * i % 50), 0), cfg->path_));
   }
 
 
@@ -475,7 +476,7 @@ void draw(float dt) {
   // Agent
   for (int i = 0; i < num_agents; i++) {
     float agentv[] = {
-        cfg->agents_[i]->position_.x, cfg->agents_[i]->position_.y, 0.01, 1, 0, 0, 0, 0};
+        cfg->agents_[i]->position_.x, cfg->agents_[i]->position_.y, 0.01, 0, 1, 0, 0, 0};
 
     glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), agentv, GL_STATIC_DRAW);
     glDrawArrays(GL_POINTS, 0, 1);

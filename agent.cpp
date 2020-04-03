@@ -25,18 +25,37 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
   glm::vec3 diff = next_->position_ - position_;
   direction_ = glm::normalize(diff);
 
+  if (glm::length(diff) < 0.01 && next_ == path_[0]) {
+    next_ = path_[++index_];
+  }
+
   int osize = obstacles.size();
   bool broken = false;
-  for (int i = 0; i < osize; i++) {
-    if (index_ < path_.size() - 1)
-      broken = obstacles[i]->line_intersecting(position_, path_[index_ + 1]->position_, radius_);
+  bool goal_broken = false;
 
-    if (broken) break;
+  for (int i = 0; i < osize; i++) {
+    // Check if it can get to next milestone
+    if (index_ < path_.size() - 1 && !broken) {
+      broken = obstacles[i]->line_intersecting(
+          position_, path_[index_ + 1]->position_, radius_);
+    }
+
+    // Check if can get to goal
+    if (!goal_broken) {
+      goal_broken = obstacles[i]->line_intersecting(
+          position_, path_[path_.size() - 1]->position_, radius_);
+    }
   }
 
   // Hooke's Law constants
   int k = 3;
   int kv = 5;
+
+  if (!goal_broken) {
+    index_ = path_.size();
+    next_ = path_[index_ - 1];
+    direction_ = glm::normalize(next_->position_ - position_);
+  }
 
   // Checks if at next milestone
   if (!broken) {
@@ -51,7 +70,6 @@ void Agent::update(float dt, const std::vector<Agent *> & agents,
     } else if (index_ < path_.size()) {
       next_ = path_[index_++];
       direction_ = glm::normalize(next_->position_ - position_);
-      //velocity_ = 1.f * glm::length(velocity_) * direction_;
     }
   }
 
@@ -146,7 +164,7 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents,
   
   //std::vector<Obstacle *> nearby;
   int osize = obstacles.size();
-  float sphere_influence = 0.25f;
+  float sphere_influence = 0.05f;
   glm::vec3 obstacle_force = glm::vec3();
 
   count = 0;
