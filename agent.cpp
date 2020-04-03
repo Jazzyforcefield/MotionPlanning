@@ -146,7 +146,7 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents,
   
   //std::vector<Obstacle *> nearby;
   int osize = obstacles.size();
-  float sphere_influence = 0.5f;
+  float sphere_influence = 0.25f;
   glm::vec3 obstacle_force = glm::vec3();
 
   count = 0;
@@ -168,5 +168,5 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents,
 
   // Sum the forces and add multiplier to separation to keep separated
   force_ = 10.f * direction_ + alignment_force + cohesion_force + 5.f * separation_force +
-           35.f * obstacle_force;
+           100.f * obstacle_force;
 }

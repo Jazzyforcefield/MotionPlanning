@@ -98,6 +98,9 @@ GLuint vbo[2];
 //  All other needed declarations
 Camera * camera;
 Configuration * cfg;
+int num_agents = 50;
+int milestones = 1000;
+int connection_weight = 10;
 int Milestone::num_milestones_ = 0;
 
 int main(int argc, char ** argv) {
@@ -132,7 +135,7 @@ int main(int argc, char ** argv) {
       exit(0);
     }
 
-    cfg->create_graph(start, goal, 1000, 10);
+    cfg->create_graph(start, goal, milestones, connection_weight);
 
     #ifndef NODEBUG
     cfg->graph_->info();
@@ -147,7 +150,7 @@ int main(int argc, char ** argv) {
   }
 
   cfg->info();
-  for (int i = 0; i < 10; i ++) {
+  for (int i = 0; i < num_agents; i ++) {
     cfg->agents_.push_back(new Agent(start - glm::vec3((2 * i % 5), -5 * i % 20, 0), cfg->path_));
   }
 
@@ -424,7 +427,7 @@ void Win2PPM(int width, int height) {
 
 void draw(float dt) {
   camera->updateCamera(dt, 800.f, 600.f);
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < num_agents; i++) {
     cfg->agents_[i]->update(dt, cfg->agents_, cfg->graph_->obstacles_);
   }
 
@@ -470,7 +473,7 @@ void draw(float dt) {
 
 
   // Agent
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < num_agents; i++) {
     float agentv[] = {
         cfg->agents_[i]->position_.x, cfg->agents_[i]->position_.y, 0.01, 1, 0, 0, 0, 0};
 
