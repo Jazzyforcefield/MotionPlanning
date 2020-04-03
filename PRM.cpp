@@ -55,7 +55,7 @@ const GLchar* vertexSource =
     "in vec3 position;"
     "in vec3 inColor;"
     "in vec3 inNormal;"
-    "const vec3 inLightDir = normalize(vec3(0,2,2));"
+    "const vec3 inLightDir = normalize(vec3(0,0,2));"
     "out vec3 Color;"
     "out vec3 normal;"
     "out vec3 lightDir;"
@@ -356,7 +356,7 @@ int main(int argc, char ** argv) {
     frame++;
     t1 = SDL_GetTicks();
     if (t1 - t0 >= 1000.f) {
-      printf("Average Frames Per Second: %.4f\r", frame * 1000.f / (t1 - t0));
+      printf("Average Frames Per Second: %.1f\r", frame * 1000.f / (t1 - t0));
       fflush(stdout);
       t0 = t1;
       frame = 0;
@@ -425,7 +425,7 @@ void Win2PPM(int width, int height) {
 void draw(float dt) {
   camera->updateCamera(dt, 800.f, 600.f);
   for (int i = 0; i < 10; i++) {
-    cfg->agents_[i]->update(dt, cfg->agents_);
+    cfg->agents_[i]->update(dt, cfg->agents_, cfg->graph_->obstacles_);
   }
 
   // Remnant of poor planning and lack of understanding...
@@ -448,7 +448,7 @@ void draw(float dt) {
 
   glEnable(GL_PROGRAM_POINT_SIZE);
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-  /*
+  
   // Points
   glDrawArrays(GL_POINTS, 0, cfg->graph_->size_);    // Index 0, 10 vertices
   
@@ -460,7 +460,7 @@ void draw(float dt) {
         cfg->graph_->milestones_[i]->connections_, GL_STATIC_DRAW);
     glDrawArrays(GL_LINES, 0, cfg->graph_->milestones_[i]->neighbors_size_ * 2); 
   }
-  */
+  
   // Circles
   for (int i = 0; i < cfg->graph_->obstacles_.size(); i++) {
     glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float) * 361,

@@ -20,34 +20,54 @@ Agent::~Agent() {
 
 }
 
-void Agent::update(float dt, const std::vector<Agent *> & agents) {
+void Agent::update(float dt, const std::vector<Agent *> & agents,
+                   const std::vector<Obstacle *> & obstacles) {
   glm::vec3 diff = next_->position_ - position_;
   direction_ = glm::normalize(diff);
 
+  int osize = obstacles.size();
+  bool broken = false;
+  for (int i = 0; i < osize; i++) {
+    if (index_ < path_.size() - 1)
+      broken = obstacles[i]->line_intersecting(position_, path_[index_ + 1]->position_, radius_);
+
+    if (broken) break;
+  }
+  int k = 5;
+  int kv = 10;
   // Checks if at next milestone
-  if (glm::length(diff) < 2.05f) {   // Naive smoothing
-    if (index_ == path_.size() - 1) {
-      velocity_ = glm::vec3();
-      acceleration_ = glm::vec3();
-      force_ = glm::vec3();
-      return;
+  if (!broken) {
+    if (index_ >= path_.size() - 1 && glm::length(diff) < 1.15f) {
+      // Hacky way to slow down and still take into account cohesion/separation
+      force_ = (float)-k * -diff + (float)-kv * velocity_ + force_ - direction_;
+
+      if (index_ >= path_.size() - 1 && glm::length(diff) < 0.05f) {
+        return;
+      } 
+    } else if (index_ < path_.size()) {
+      next_ = path_[index_++];
+      direction_ = glm::normalize(next_->position_ - position_);
+      velocity_ = 1.f * glm::length(velocity_) * direction_;
     }
-    
-    index_++;
-    next_ = path_[index_];
-    direction_ = glm::normalize(next_->position_ - position_);
-    velocity_ = 1.f * glm::length(velocity_) * direction_;
   }
 
   position_ += velocity_ * dt;
   velocity_ += force_ * dt;
-  if (glm::length(velocity_) < 0.05f && glm::length(force_) - glm::length(direction_) < 0.15f) {
+
+  if (glm::length(next_->position_ - position_) < 1.15f &&
+      index_ >= path_.size() - 1) {
+    //return;
+  }
+
+  // && glm::length(force_) - 2.f * glm::length(direction_) < 3.35f
+  if (glm::length(velocity_) < 0.05f) {
     velocity_ = glm::vec3();
   }
-  //force_ = direction_;
+
   calculate_forces(agents);
-  if (glm::length(velocity_) > 5.f) {
-    velocity_ = glm::normalize(velocity_) * 5.f;
+
+  if (glm::length(velocity_) > speed_) {
+    velocity_ = glm::normalize(velocity_) * speed_;
   }
 }
 
@@ -101,7 +121,7 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
   count = 0;
   for (int i = 0; i < nearby.size(); i++) {
     float dist = glm::length(position_ - nearby[i]->position_);
-    if (dist > 0 && dist < 2.f * boid_dist - radius_) {
+    if (dist > 0 && dist < boid_dist - radius_) {
       separation_force += glm::normalize(position_ - nearby[i]->position_) / dist;
       count++;
     }
@@ -115,8 +135,8 @@ void Agent::calculate_forces(const std::vector<Agent *> & agents) {
     separation_force = glm::normalize(separation_force) * speed_ - velocity_;
   }
 
-  std::cout << glm::length(alignment_force) << " " << glm::length(cohesion_force) << " "
-            << glm::length(separation_force) << std::endl;
+  //std::cout << glm::length(alignment_force) << " " << glm::length(cohesion_force) << " "
+  //          << glm::length(separation_force) << std::endl;
 
-  force_ = direction_ + alignment_force + cohesion_force + separation_force;
+  force_ = direction_ + alignment_force + cohesion_force + 3.50f * separation_force;
 }
